@@ -1,2 +1,2 @@
-# wallpaper-sorter
-A tool for organizing wallpapers using tags
+# image-sorter
+A tool for organizing wallpapers (or other images)  using a platform agnostic tagging system.
