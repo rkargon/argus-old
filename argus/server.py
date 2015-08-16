@@ -1,11 +1,12 @@
 """
-Argus is a tag-based image organization tool.
+Code for running the server.
 """
 
 from flask import Flask
+from argus import Argus
 
 app = Flask(__name__, static_url_path="/static")
-
+argus = Argus()
 
 @app.route('/')
 def serve_ui():
