@@ -1,2 +1,3 @@
-__all__ = ['server']
+__all__ = ['model', 'server']
+import model
 import server
