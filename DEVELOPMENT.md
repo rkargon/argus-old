@@ -18,13 +18,24 @@ Notes on development. Documentation, TODOs, etc.
 ### Database Schema
 We use three tables: One to store images, one to store tags, and a junction table to map the first to the second.
 
-#### **image_file**
+#### **config**
+
+Contains database settings, as a list of key-value pairs. 
+e.g. the image folder to which a database corresponds could be stored here.
+
+| name | type | description | constraints
+| --- | --- | --- | --- |
+| name | string | attribute name | unique, not-null
+| value | string | attribute value | not-null
+
+ --- 
+#### **image\_file**
 
 Contains file info
 
 | name | type | description | constraints
 | --- | --- | --- |  --- |
-| imagefile_id | int | file id | primary key
+| imagefile\_id | int | file id | primary key
 | path | string | file path in system | unique, not-null
 
  ---
@@ -34,18 +45,18 @@ Contains the set of tags used by the DB
 
 | name | type | description | constraints
 | --- | --- | --- |  --- |
-| tag_id | int | tag id | primary key
+| tag\_id | int | tag id | primary key
 | name | string | the tag name | unique, not-null
 
  ---
-#### **image_tag_map**
+#### **image\_tag\_map**
 
 Maps images to tags
 
 | name | type | description | constraints
 | --- | --- | --- |  --- |
-| image_id | int | id of image | primary key
-| tag_id | int | id of tag | primary ket
+| image\_id | int | id of image | primary key
+| tag\_id | int | id of tag | primary ket
 
  ---
  

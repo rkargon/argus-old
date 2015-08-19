@@ -21,8 +21,8 @@ class Config(Base):
     """
     __tablename__ = 'config'
     attribute_id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True)
-    value = Column(String)
+    name = Column(String, unique=True, nullable=False)
+    value = Column(String, nullable=False)
 
 class ImageFile(Base):
     """ Represents a single image file.
