@@ -1,3 +1,4 @@
+import mimetypes
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -33,7 +34,11 @@ class Argus:
         self.load_database(db_path)
 
         # load all images in image_folder and add them to db
-        # TODO only retrieve images
+        # TODO mime type only detects stuff based on extensions.
+        # Should we do something more advanced, like trying to load the image?
+        # This is costly, but eventually I'm planning on loading the image
+        # anyway, to get resolution / color data, so that would kinda happen
+        # anyways
         s = self.Session()
         for dir in os.walk(image_folder):
             current_dir = dir[0]
@@ -48,9 +53,11 @@ class Argus:
             files = dir[2]
             images = []
             for f in files:
-                image_file = ImageFile(path=os.path.join(current_dir,f))
-                image_file.tags = tags
-                images.append(image_file)
+                mime_type = mimetypes.guess_type(f)
+                if mime_type[0].startswith('image'):
+                    image_file = ImageFile(path=os.path.join(current_dir,f))
+                    image_file.tags = tags
+                    images.append(image_file)
             s.add_all(images)
 
         s.commit()
