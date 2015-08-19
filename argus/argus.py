@@ -2,7 +2,7 @@ import mimetypes
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from model import Base, image_tag_map, ImageFile, Tag
+from model import Base, image_tag_map, ImageFile, Tag, Config
 
 
 class Argus:
@@ -32,14 +32,13 @@ class Argus:
         """
         # TODO what if database file already exists?
         self.load_database(db_path)
+        s = self.Session()
+
+        # add basic settings to the db
+        s.add(Config(name='image_folder', value=os.path.abspath(image_folder)))
 
         # load all images in image_folder and add them to db
         # TODO mime type only detects stuff based on extensions.
-        # Should we do something more advanced, like trying to load the image?
-        # This is costly, but eventually I'm planning on loading the image
-        # anyway, to get resolution / color data, so that would kinda happen
-        # anyways
-        s = self.Session()
         for dir in os.walk(image_folder):
             current_dir = dir[0]
             rel_path = os.path.relpath(current_dir, image_folder)

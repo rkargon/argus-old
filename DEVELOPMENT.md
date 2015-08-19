@@ -57,7 +57,7 @@ Right now, just see `argus/server.py`. It's pretty clearly documented there, eve
 1. Error handling/reporting for server endpoints
 	2. What kinds of output should server requests produce? Status codes enough?
 1. When creating new database, actually add images, assign tags, etc. 
-1. How should we store the folder path in the database? Should we have a 'config' table with a list of attributes, and have a 'path' attribute?
+1. Right now the folder a db corresponds to is stored in the `config` table, as an absolute path. Clearly for syncing between different computers this will be a problem. We could use a relative path from the db file, but this will only work in some cases. Is there a better way to associate database to image folder? (**ALSO**: We should make sure store image paths relative to the image folder in the db)
 1. How to query for tags? Should it be OR based (i.e. return all images that have at least one tag) or AND based (i.e. return all images that have all the given tags?)
 	2.  Perhaps have the user create expressions wit NOTs (`!` or `~`), ANDs, (`^` or `&`) and ORs (`|`) that gets parsed by server?
 		3. e.g. `tag1 & (tag2 | ~tag3)`
@@ -68,3 +68,5 @@ Right now, just see `argus/server.py`. It's pretty clearly documented there, eve
 1. Convert Flask server routes into a standard, RESTful API *(low priority) *
 1. Should `Argus` object expose its DB Session? This would allow clients to do custom queries that we might not anticipate, but could also be a security issue. I'm leaning towards no, the basic set of stuff we allow will be more than sufficient (e.g. get images by tags, or add tag to image)
 1.  Figure out how SQLAlchemy handles adding of duplicate items (what kinds of errors it throws, etc. Should throw an IntegrityError, too lazy to check it right now)
+1. How to make sure we don't load non-images into the db? Right now we just used mime-type checking, based on file extension. Should we do something more advanced, like trying to load the image?  This is costly, but eventually I'm planning on loading the image anyway, to get resolution / color data, so that would kinda happen anyways. 
+1. FoRight now storing 

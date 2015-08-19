@@ -14,6 +14,15 @@ image_tag_map = Table('image_tag_map', Base.metadata,
                       Column('tag_id', Integer, ForeignKey('tag.tag_id'), primary_key=True)
                       )
 
+class Config(Base):
+    """
+    Database table for storing db-level settings.
+    For instance, the folder that this db points to.
+    """
+    __tablename__ = 'config'
+    attribute_id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True)
+    value = Column(String)
 
 class ImageFile(Base):
     """ Represents a single image file.
