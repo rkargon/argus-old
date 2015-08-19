@@ -1,3 +1,4 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from model import Base, image_tag_map, ImageFile, Tag
@@ -30,7 +31,22 @@ class Argus:
         """
         self.load_database(db_path)
         # TODO load all images in image_folder and add them to db
-        pass
+        s = self.Session()
+        for dir in os.walk(image_folder):
+            current_dir = dir[0]
+            rel_path = os.path.relpath(current_dir, db_path)
+            tag_names = rel_path.split('/')
+            tags = [Tag(name=tn) for tn in tag_names]
+
+            files = dir[2]
+            images = []
+            for f in files:
+                image_file = ImageFile(path=current_dir+f)
+                image_file.tags = tags
+                images.append(image_file)
+            s.add_all(images)
+
+        s.commit()
 
     def update_database(self):
         """

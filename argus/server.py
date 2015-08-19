@@ -64,7 +64,7 @@ def get_all_images():
     return jsonify({'images': serialized_image_files}), 202
 
 
-@app.route('/get-image-tags/<id:int>', methods=['GET'])
+@app.route('/get-image-tags/<int:id>', methods=['GET'])
 def get_image_tags(id):
     """
     Returns the set of tags for a given image.
@@ -76,7 +76,7 @@ def get_image_tags(id):
     return jsonify({'tags': serialized_tags}), 202
 
 
-@app.route('/add-image-tags/<id:int>', methods=['POST'])
+@app.route('/add-image-tags/<int:id>', methods=['POST'])
 def add_image_tags(id):
     """
     Adds a set of given tags to the database
