@@ -10,8 +10,8 @@ Base = declarative_base()
 
 # mapping from images to tags
 image_tag_map = Table('image_tag_map', Base.metadata,
-                      Column('image_id', Integer, ForeignKey('imagefile.imagefile_id')),
-                      Column('tag_id', Integer, ForeignKey('tag.tag_id'))
+                      Column('image_id', Integer, ForeignKey('imagefile.imagefile_id'), primary_key=True),
+                      Column('tag_id', Integer, ForeignKey('tag.tag_id'), primary_key=True)
                       )
 
 
@@ -21,11 +21,14 @@ class ImageFile(Base):
     __tablename__ = 'imagefile'
 
     imagefile_id = Column(Integer, primary_key=True)
-    path = Column(String, unique=True)
+    path = Column(String, nullable=False, unique=True)
     tags = relationship('Tag', secondary=image_tag_map, backref='images')
 
     def __repr__(self):
         return '<ImageFile(id=%d, path="%s")' % (self.imagefile_id, self.path)
+
+    def as_dict(self):
+        return {'imagefile_id': self.imagefile_id, 'path': self.path}
 
 
 class Tag(Base):
@@ -34,8 +37,13 @@ class Tag(Base):
     __tablename__ = 'tag'
 
     tag_id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True)
+    name = Column(String, nullable=False, unique=True)
+
+    def __init__(self, name):
+        self.name = name
 
     def __repr__(self):
         return '<Tag(id=%d, name="%s")' % (self.tag_id, self.name)
 
+    def as_dict(self):
+        return {'tag_id': self.tag_id, 'name': self.name}
