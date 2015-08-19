@@ -29,19 +29,26 @@ class Argus:
         image_folder is recursively searched for images,
         and sub-folder names are added as tags to their containing images.
         """
+        # TODO what if database file already exists?
         self.load_database(db_path)
-        # TODO load all images in image_folder and add them to db
+
+        # load all images in image_folder and add them to db
+        # TODO only retrieve images
         s = self.Session()
         for dir in os.walk(image_folder):
             current_dir = dir[0]
-            rel_path = os.path.relpath(current_dir, db_path)
-            tag_names = rel_path.split('/')
-            tags = [Tag(name=tn) for tn in tag_names]
+            rel_path = os.path.relpath(current_dir, image_folder)
+            if rel_path == '.':
+                tags = []
+            else:
+                # use subdirectory names as tags
+                tag_names = rel_path.split('/')
+                tags = [Tag(name=tn) for tn in tag_names]
 
             files = dir[2]
             images = []
             for f in files:
-                image_file = ImageFile(path=current_dir+f)
+                image_file = ImageFile(path=os.path.join(current_dir,f))
                 image_file.tags = tags
                 images.append(image_file)
             s.add_all(images)
@@ -81,5 +88,5 @@ class Argus:
         s = self.Session()
         image_file = s.query(ImageFile).filter(ImageFile.imagefile_id == image_id).one()
         tags = [Tag(name=tn) for tn in tag_names]
-        image_file.tags.append(tags)
+        image_file.tags.extend(tags)
         s.commit()

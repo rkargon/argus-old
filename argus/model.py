@@ -25,7 +25,7 @@ class ImageFile(Base):
     tags = relationship('Tag', secondary=image_tag_map, backref='images')
 
     def __repr__(self):
-        return '<ImageFile(id=%d, path="%s")' % (self.imagefile_id, self.path)
+        return '<ImageFile(id=%s, path="%s")' % (self.imagefile_id, self.path)
 
     def as_dict(self):
         return {'imagefile_id': self.imagefile_id, 'path': self.path}
@@ -43,7 +43,7 @@ class Tag(Base):
         self.name = name
 
     def __repr__(self):
-        return '<Tag(id=%d, name="%s")' % (self.tag_id, self.name)
+        return '<Tag(id=%s, name="%s")' % (self.tag_id, self.name)
 
     def as_dict(self):
         return {'tag_id': self.tag_id, 'name': self.name}
