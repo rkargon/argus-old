@@ -21,26 +21,32 @@ We use three tables: One to store images, one to store tags, and a junction tabl
 #### **image_file**
 
 Contains file info
+
 | name | type | description | constraints
 | --- | --- | --- |  --- |
 | imagefile_id | int | file id | primary key
 | path | string | file path in system | unique, not-null
+
  ---
 #### **tag**
 
 Contains the set of tags used by the DB
+
 | name | type | description | constraints
 | --- | --- | --- |  --- |
 | tag_id | int | tag id | primary key
 | name | string | the tag name | unique, not-null
+
  ---
 #### **image_tag_map**
 
 Maps images to tags
+
 | name | type | description | constraints
 | --- | --- | --- |  --- |
 | image_id | int | id of image | primary key
 | tag_id | int | id of tag | primary ket
+
  ---
  
 ### Server endpoints 
