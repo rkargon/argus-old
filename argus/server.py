@@ -36,7 +36,7 @@ def new_db():
     Input JSON: { db_path: <path to db file>, folder_path: <path to image folder> }
     :return: 202 status
     """
-    db_path = request.json.get('db_path')
+    db_path = request.json.get('db_name')
     folder_path = request.json.get('folder_path')
     argus.new_database(db_path, folder_path)
     return 202

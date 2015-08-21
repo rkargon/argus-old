@@ -1,6 +1,7 @@
 """
 Classes representing database objects.
 """
+import re
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Table
 from sqlalchemy.ext.declarative import declarative_base
@@ -14,6 +15,7 @@ image_tag_map = Table('image_tag_map', Base.metadata,
                       Column('tag_id', Integer, ForeignKey('tag.tag_id'), primary_key=True)
                       )
 
+
 class Config(Base):
     """
     Database table for storing db-level settings.
@@ -23,6 +25,7 @@ class Config(Base):
     attribute_id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
     value = Column(String, nullable=False)
+
 
 class ImageFile(Base):
     """ Represents a single image file.
@@ -49,6 +52,8 @@ class Tag(Base):
     name = Column(String, nullable=False, unique=True)
 
     def __init__(self, name):
+        name = re.sub(r'\s+', '-', name.lower().strip().lstrip())
+        name = re.sub(r'[^0-9a-z\-]', '', name)
         self.name = name
 
     def __repr__(self):
