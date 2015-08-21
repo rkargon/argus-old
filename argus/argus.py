@@ -37,10 +37,12 @@ class Argus:
         Base.metadata.create_all(engine)
         self.Session.configure(bind=engine)
 
-    def populate_db(self, directory=None):
-
-        if directory is None:
-            directory = self._image_folder
+    def populate_db(self):
+        """
+        Recursively searches image directory for new images to add to the db.
+        Subdirectory names are added as tags to their containing images.
+        """
+        directory = self._image_folder
 
         s = self.Session()
         # keep track of images already in the database
