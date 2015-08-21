@@ -49,6 +49,7 @@ class Argus:
         current_images = s.query(ImageFile).all()
         current_image_paths = set([img.path for img in current_images])
 
+        images = []
         for current_dir, _, files in os.walk(directory):
             rel_path = os.path.relpath(current_dir, directory)
             if rel_path == '.':
@@ -57,7 +58,6 @@ class Argus:
                 # use subdirectory names as tags
                 tag_names = rel_path.split('/')
                 tags = [Tag(name=tn) for tn in tag_names]
-            images = []
             for f in files:
                 image_path = os.path.join(current_dir, f)
                 if image_path in current_image_paths:
@@ -67,7 +67,7 @@ class Argus:
                     image_file = ImageFile(path=image_path)
                     image_file.tags = tags
                     images.append(image_file)
-            s.add_all(images)
+        s.add_all(images)
         s.commit()
 
     def new_database(self, db_name, image_folder):
