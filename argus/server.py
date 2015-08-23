@@ -73,7 +73,7 @@ def get_image_tags(id):
     :return: A JSON string {tags: [ <tags...> ]}
     """
     tags = argus.get_image_tags(id)
-    serialized_tags = [t.as_dict for t in tags]
+    serialized_tags = [t.as_dict() for t in tags]
     return jsonify({'tags': serialized_tags}), 202
 
 
@@ -88,6 +88,18 @@ def add_image_tags(id):
     tag_names = request.json.get('tag_names')
     argus.add_image_tags(id, tag_names)
     return 202
+
+
+@app.route('/get-images-by-tags/', methods=['POST'])
+def get_images_by_tags():
+    """
+    Returns all images that contain at least one of the tags in the given tag names
+    :return: A JSON string {images: [<images...> ]}
+    """
+    tag_names = request.json.get('tag_names')
+    images = argus.get_images_by_tags(tag_names)
+    serialized_images = [img.as_dict() for img in images]
+    return jsonify({'images': serialized_images}), 202
 
 
 def main():
