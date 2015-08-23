@@ -1,9 +1,10 @@
 """
 Code for running the server.
 """
+import argparse
 
 from flask import Flask, request, jsonify
-import sys
+
 from argus import Argus
 
 app = Flask(__name__, static_url_path="/static")
@@ -89,11 +90,15 @@ def add_image_tags(id):
     return 202
 
 
-def main(argv):
+def main():
     """
     Parse arguments, and run the server.
     """
-    app.run()
+    parser = argparse.ArgumentParser(description='Run the Argus server')
+    parser.add_argument('-p', '--port', type=int, default=5000,
+                        help='Specify which port the Argus server should run on.')
+    args = parser.parse_args()
+    app.run(port=args.port)
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()

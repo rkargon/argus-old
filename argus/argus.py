@@ -63,6 +63,8 @@ class Argus:
                 if image_path in current_image_paths:
                     continue
                 mime_type = mimetypes.guess_type(f)
+                if mime_type[0] is None:
+                    continue
                 if mime_type[0].startswith('image'):
                     image_file = ImageFile(path=image_path)
                     image_file.tags = tags
@@ -82,7 +84,7 @@ class Argus:
         db_exists = os.path.isfile(db_path)
         self.load_database(db_path)
         if db_exists:
-            self.populate_db(image_folder)
+            self.populate_db()
 
     def update_database(self):
         """
@@ -95,7 +97,7 @@ class Argus:
     def get_all_images(self):
         """
         Gets all images files currently in the database.
-        Does not return assosciated tag data
+        Does not return associated tag data
         :return: A list of ImageFile objects
         """
         # TODO merge this into a generalized query function
@@ -119,3 +121,13 @@ class Argus:
         tags = [Tag(name=tn) for tn in tag_names]
         image_file.tags.extend(tags)
         s.commit()
+
+    def get_images_by_tags(self, tags):
+        """
+        Returns a list of all images that have at least one of the tags given.
+        :param tags: The list of tags to search for
+        :return: A list of images
+        """
+        s = self.Session()
+        images = s.query(ImageFile).filter(ImageFile.tags.any(Tag.name.in_(tags))).all()
+        return images
