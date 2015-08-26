@@ -19,8 +19,18 @@
 		<img class="menuicon" title="help" src="/static/images/help.png"> <br><br> <!-- Help -->
 	</div>
 	<div id="view">	
-    	<!-- WORK YOUR MAGIC TUCKER -->
-    	<input id="querybar" placeholder="Query: " type="text"></input>
-    </div>
+		<!-- WORK YOUR MAGIC TUCKER -->
+		<input id="querybar" placeholder="Query: " type="text" ng-model="query" ng-enter="sendQuery()"></input>
+		
+		<div id="image-container">
+			<!-- List of thumbails -->
+			<img class="thumbnail" ng-if="!selectedImage" ng-repeat="img in queryResult" ng-src="{{ '/db-image/' +  img.path }}" ng-click="selectImage($index)">
+
+			<!-- Single selected image -->
+			<span ng-if="selectedImage">
+				<img class="selected-image" ng-src="{{ '/db-image/' + selectedImage.path }}">
+			</span>
+		</div>
+	</div>
 </body>
 </html>

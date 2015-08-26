@@ -3,7 +3,7 @@ Code for running the server.
 """
 import argparse
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 
 from argus import Argus
 
@@ -18,7 +18,7 @@ def serve_ui():
     return app.send_static_file('index.html')
 
 
-@app.route('/load-db', methods=['POST'])
+@app.route('/load-db/', methods=['POST'])
 def load_db():
     """
     Loads an existing DB into the session
@@ -30,7 +30,7 @@ def load_db():
     return '', 204
 
 
-@app.route('/new-db', methods=['POST'])
+@app.route('/new-db/', methods=['POST'])
 def new_db():
     """
     Creates a new database file that corresponds to a certain folder
@@ -43,7 +43,7 @@ def new_db():
     return '', 204
 
 
-@app.route('/update-db', methods=['POST'])
+@app.route('/update-db/', methods=['POST'])
 def update_db():
     """
     Updates the database, looking for added files and changes to the image files.
@@ -54,7 +54,7 @@ def update_db():
     return '', 204
 
 
-@app.route('/get-all-images', methods=['GET'])
+@app.route('/get-all-images/', methods=['GET'])
 def get_all_images():
     """
     Returns all images in the database. (But not associated tag data)
@@ -100,6 +100,18 @@ def get_images_by_tags():
     images = argus.get_images_by_tags(tag_names)
     serialized_images = [img.as_dict() for img in images]
     return jsonify({'images': serialized_images}), 202
+
+
+@app.route('/db-image/<path:path>')
+def db_image(path):
+    """
+    Serves an image from the image folder.
+    :param path: The local path to the image (relative to the image folder)
+    :return: An image file.
+    """
+    print argus._image_folder
+    print path
+    return send_from_directory(argus._image_folder, path)
 
 
 def main():

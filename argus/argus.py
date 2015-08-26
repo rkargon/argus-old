@@ -24,15 +24,15 @@ class Argus:
         and other functions that call self.Session() will get a connection to the proper db.
         """
         self.Session = sessionmaker()
-        self._db_path = None
+        self._db_name = None
         self._image_folder = None
 
     def load_database(self, db_path):
         """
         Loads an sqlite database from db_path. If the database does not exist, it is created.
         """
-        self._db_path = db_path
-        self._image_folder = os.path.dirname(os.path.realpath(db_path))
+        self._db_name = os.path.basename(db_path)
+        self._image_folder = os.path.dirname(os.path.abspath(db_path))
         engine = create_engine('sqlite:///%s' % db_path, echo=False)
         Base.metadata.create_all(engine)
         self.Session.configure(bind=engine)
@@ -60,13 +60,14 @@ class Argus:
                 tags = [Tag(name=tn) for tn in tag_names]
             for f in files:
                 image_path = os.path.join(current_dir, f)
-                if image_path in current_image_paths:
+                img_local_path = os.path.relpath(image_path, directory)
+                if img_local_path in current_image_paths:
                     continue
                 mime_type = mimetypes.guess_type(f)
                 if mime_type[0] is None:
                     continue
                 if mime_type[0].startswith('image'):
-                    image_file = ImageFile(path=image_path)
+                    image_file = ImageFile(path=img_local_path)
                     image_file.tags = tags
                     images.append(image_file)
         s.add_all(images)

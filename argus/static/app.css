@@ -53,3 +53,22 @@ input#querybar {
 	margin-top: 50px;
 	width: 50%;
 }
+
+div#image-container {
+	margin: 50px;
+}
+
+img.thumbnail {
+	border: 1px solid #666666;
+	margin: 10px;
+	width: 200px;
+}
+
+img.thumbnail:hover {
+	border: 1px solid #AAAAAA;
+}
+
+img.selected-image {
+	border: 1px solid #666666;
+	width: 100%;
+}
