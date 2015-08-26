@@ -3,11 +3,24 @@
 <title>Agus</title>
 
 <link rel="stylesheet" type="text/css" href="/static/app.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+<!-- Use local files in development: -->
+<script src="/static/lib/jquery.min.js"></script>
+<script src="/static/lib/angular.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script> -->
 <script src="/static/app.js"></script>
+<script src="/static/db-service.js"></script>
 </head>
-<body ng-app="angularUI" ng-controller="angularViewCtrl">
-    <h1>WORK YOUR MAGIC TUCKER</h1>
+<body ng-app="argusUI" ng-controller="argusViewCtrl">
+	<div id="menubar">
+		<img class="menuicon" title="open a database" src="/static/images/open.png" ng-click="loadDB('tests/sample_walls/test_db.sqlite')"> <br><br> <!-- Open a DB -->
+		<img class="menuicon" title="create new database" src="/static/images/new.png" ng-click="newDB('test_db.sqlite', 'tests/sample_walls/')"> <br><br> <!-- New DB -->
+		<img class="menuicon" title="update the database" src="/static/images/update.png"> <br><br> <!-- Update the DB -->
+		<img class="menuicon" title="help" src="/static/images/help.png"> <br><br> <!-- Help -->
+	</div>
+	<div id="view">	
+    	<!-- WORK YOUR MAGIC TUCKER -->
+    	<input id="querybar" placeholder="Query: " type="text"></input>
+    </div>
 </body>
 </html>

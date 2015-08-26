@@ -2,7 +2,9 @@
 
 angular.module('argusUI').
 
-factory('dbService', ['$http', function($http){
+// service that interfaces with the argus server
+// Each function corresponds to an endpoint in server.py
+factory('DBService', ['$http', function($http){
 	var DBService = {};
 
 	DBService.loadDB = function(db_path){

@@ -23,11 +23,11 @@ def load_db():
     """
     Loads an existing DB into the session
     Input JSON: { db_path: <path to db file> }
-    :return: 202 status
+    :return: 204 status
     """
     db_path = request.json.get('db_path')
     argus.load_database(db_path)
-    return 202
+    return '', 204
 
 
 @app.route('/new-db', methods=['POST'])
@@ -35,12 +35,12 @@ def new_db():
     """
     Creates a new database file that corresponds to a certain folder
     Input JSON: { db_path: <path to db file>, folder_path: <path to image folder> }
-    :return: 202 status
+    :return: 204 status
     """
     db_path = request.json.get('db_name')
     folder_path = request.json.get('folder_path')
     argus.new_database(db_path, folder_path)
-    return 202
+    return '', 204
 
 
 @app.route('/update-db', methods=['POST'])
@@ -48,10 +48,10 @@ def update_db():
     """
     Updates the database, looking for added files and changes to the image files.
     Input JSON: No input required
-    :return: 202
+    :return: 204
     """
     argus.update_database()
-    return 202
+    return '', 204
 
 
 @app.route('/get-all-images', methods=['GET'])
@@ -87,7 +87,7 @@ def add_image_tags(id):
     """
     tag_names = request.json.get('tag_names')
     argus.add_image_tags(id, tag_names)
-    return 202
+    return '', 202
 
 
 @app.route('/get-images-by-tags/', methods=['POST'])
@@ -110,7 +110,7 @@ def main():
     parser.add_argument('-p', '--port', type=int, default=5000,
                         help='Specify which port the Argus server should run on.')
     args = parser.parse_args()
-    app.run(port=args.port)
+    app.run(port=args.port, debug=True)
 
 if __name__ == '__main__':
     main()
