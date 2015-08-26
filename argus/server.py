@@ -23,11 +23,11 @@ def load_db():
     """
     Loads an existing DB into the session
     Input JSON: { db_path: <path to db file> }
-    :return: 204 status
+    :return: database info
     """
     db_path = request.json.get('db_path')
     argus.load_database(db_path)
-    return '', 204
+    return db_status()
 
 
 @app.route('/new-db/', methods=['POST'])
@@ -35,12 +35,12 @@ def new_db():
     """
     Creates a new database file that corresponds to a certain folder
     Input JSON: { db_path: <path to db file>, folder_path: <path to image folder> }
-    :return: 204 status
+    :return: database info
     """
     db_path = request.json.get('db_name')
     folder_path = request.json.get('folder_path')
     argus.new_database(db_path, folder_path)
-    return '', 204
+    return db_status()
 
 
 @app.route('/update-db/', methods=['POST'])
@@ -65,28 +65,28 @@ def get_all_images():
     return jsonify({'images': serialized_image_files}), 202
 
 
-@app.route('/get-image-tags/<int:id>', methods=['GET'])
-def get_image_tags(id):
+@app.route('/get-image-tags/<int:img_id>', methods=['GET'])
+def get_image_tags(img_id):
     """
     Returns the set of tags for a given image.
-    :param id: The image file's id.
+    :param img_id: The image file's id.
     :return: A JSON string {tags: [ <tags...> ]}
     """
-    tags = argus.get_image_tags(id)
+    tags = argus.get_image_tags(img_id)
     serialized_tags = [t.as_dict() for t in tags]
     return jsonify({'tags': serialized_tags}), 202
 
 
-@app.route('/add-image-tags/<int:id>', methods=['POST'])
-def add_image_tags(id):
+@app.route('/add-image-tags/<int:img_id>', methods=['POST'])
+def add_image_tags(img_id):
     """
     Adds a set of given tags to the database
     Input JSON: { tag_names: [<tag names...>] }
-    :param id: The image file's id.
+    :param img_id: The image file's id.
     :return: 202 status
     """
     tag_names = request.json.get('tag_names')
-    argus.add_image_tags(id, tag_names)
+    argus.add_image_tags(img_id, tag_names)
     return '', 202
 
 
@@ -109,9 +109,16 @@ def db_image(path):
     :param path: The local path to the image (relative to the image folder)
     :return: An image file.
     """
-    print argus._image_folder
-    print path
     return send_from_directory(argus._image_folder, path)
+
+
+@app.route('/get-db-info/', methods=['GET'])
+def db_status():
+    """
+    Gets info on the database, including the image folder path, the database name, and the number of images in the db.
+    :return: Output from Argus.get_db_info()
+    """
+    return jsonify({'info': argus.get_db_info()}), 202
 
 
 def main():

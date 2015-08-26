@@ -12,14 +12,36 @@
 <script src="/static/db-service.js"></script>
 </head>
 <body ng-app="argusUI" ng-controller="argusViewCtrl">
-	<div id="menubar">
-		<img class="menuicon" title="open a database" src="/static/images/open.png" ng-click="loadDB('tests/sample_walls/test_db.sqlite')"> <br><br> <!-- Open a DB -->
-		<img class="menuicon" title="create new database" src="/static/images/new.png" ng-click="newDB('test_db.sqlite', 'tests/sample_walls/')"> <br><br> <!-- New DB -->
-		<img class="menuicon" title="update the database" src="/static/images/update.png"> <br><br> <!-- Update the DB -->
-		<img class="menuicon" title="help" src="/static/images/help.png"> <br><br> <!-- Help -->
+	<div id="menu">
+		<div id="menuarea" ng-if="menuStatus">
+			<div ng-if="menuStatus == 'info'">
+				<span class="info-title"> Image folder: </span> {{ dbInfo.image_folder }} 
+				<br><br>
+				<span class="info-title"> Database name: </span> {{ dbInfo.db_name }}
+				<br><br>
+				<span class="info-title"> Image count: </span> {{ dbInfo.image_count }}
+			</div>
+		</div>
+		<div id="menubar">
+			<!-- Open a DB -->
+			<img class="menuicon" title="open a database" src="/static/images/open.png" ng-click="loadDB('argus/tests/sample_walls/test_db.sqlite')">
+			<br><br> 
+			<!-- New DB -->
+			<img class="menuicon" title="create new database" src="/static/images/new.png" ng-click="newDB('test_db.sqlite', 'argus/tests/sample_walls/')">
+			<br><br> 
+			<!-- Update the DB -->
+			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo }">
+			<br><br> 
+			<!-- View DB Info -->
+			<img class="menuicon" title="info" src="/static/images/info.png" ng-class="{ disabled: !dbInfo }" ng-click="dbInfo && showMenu('info')">
+			<br><br> 
+			<!-- Help -->
+			<img class="menuicon" title="help" src="/static/images/help.png"> 
+			<br><br> 
+		</div>
 	</div>
+
 	<div id="view">	
-		<!-- WORK YOUR MAGIC TUCKER -->
 		<input id="querybar" placeholder="Query: " type="text" ng-model="query" ng-enter="sendQuery()"></input>
 		
 		<div id="image-container">

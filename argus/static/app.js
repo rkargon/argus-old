@@ -3,21 +3,36 @@
 var app = angular.module('argusUI', []);
 
 app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBService){
-	// The current resultset of images
+	// info on the database
+	$scope.dbInfo = null;
+	// Which menu is currently open. If null, no menu is shown.
+	$scope.menuStatus = null;
+	// The current result set of images
 	$scope.queryResult = null;
 	$scope.query = null;
+	// The selected image (and its index in the resultset)
 	$scope.selectedImage = null;
 	$scope.selectedIndex = null;
+
+	DBService.getDBInfo()
+		.success(function(response){
+			$scope.dbInfo = response.info;
+		})
+		.error(function(){
+			console.log("Could not get DB info.");
+		});
 
 	/* EVERYTHING BELOW THIS IS FUNCTION DECALRATIONS */
 
 	// Load an existing database
 	$scope.loadDB = function(db_path){
+		$scope.clearDBInfo();
 		DBService.loadDB(db_path)
 			.success(function(response){
 				// TODO show most recent images when db is loaded?
 				// Or somehow display fact that database is connected
 				console.log("Successfully loaded DB");
+				$scope.dbInfo = response.info;
 			})
 			.error(function(){
 				console.log("Failed to load DB");
@@ -26,10 +41,12 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 
 	// Load a new database
 	$scope.newDB = function(db_name, folder_path){
+		$scope.clearDBInfo();
 		DBService.newDB(db_name, folder_path)
 			.success(function(response){
 				// TODO show most recent images when db is loaded?
 				console.log("Successfully loaded new DB");
+				$scope.dbInfo = response.info;
 			})
 			.error(function(){
 				console.log("Failed to load new DB");
@@ -39,9 +56,7 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 	// Send a query to the database
 	// TODO fancy things like AND and OR
 	$scope.sendQuery = function(){
-		$scope.queryResult = [];
-		$scope.selectedIndex = null;
-		$scope.selectedImage = null;
+		$scope.queryResult = null;
 		if(!$scope.query){
 			return;
 		}
@@ -61,10 +76,50 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 			});
 	};
 
+	// select an image from $scope.queryResult by index.
 	$scope.selectImage = function(index){
 		$scope.selectedIndex = index;
 		$scope.selectedImage = $scope.queryResult[index];
 	};
+
+	// clears the selected image.
+	$scope.deselectImage = function(){
+		$scope.selectedIndex = null;
+		$scope.selectedImage = null;
+	};
+
+	// clears the current query (e.g. when starting a new query)
+	$scope.clearQuery = function(){
+		$scope.deselectImage();
+		$scope.query = null;
+		$scope.queryResult = null;
+	}
+
+	// clears the database info (e.g. when loading a new database)
+	$scope.clearDBInfo = function(){
+		$scope.dbInfo = null;
+		$scope.clearQuery();
+	}
+
+	// show a specific menu. If the given menu is already shown, hide it. 
+	$scope.showMenu = function(menuName){
+		if ($scope.menuStatus == menuName){
+			$scope.menuStatus = null;
+		} else {
+			$scope.menuStatus = menuName;
+			switch ($scope.menuStatus){
+				case 'info':
+					DBService.getDBInfo()
+						.success(function(response){
+							$scope.dbInfo = response.info;
+						})
+						.error(function(){
+							console.log("Could not get DB info.");
+						});
+					break;
+			};
+		}
+	}
 }]);
 
 // A directive that binds a function to an 'Enter' keypress event.

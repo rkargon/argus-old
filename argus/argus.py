@@ -95,6 +95,20 @@ class Argus:
         self.populate_db()
         return
 
+    def get_db_info(self):
+        """
+        Gets some general info about the database.
+        :return: The image folder, the database name, and the number of images in the db.
+        """
+        info = {
+            'image_folder': self._image_folder,
+            'db_name': self._db_name,
+        }
+        if self._db_name is not None:
+            s = self.Session()
+            info['image_count'] = s.query(ImageFile).count()
+        return info
+
     def get_all_images(self):
         """
         Gets all images files currently in the database.

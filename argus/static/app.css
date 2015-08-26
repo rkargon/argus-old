@@ -4,14 +4,37 @@ body {
 	font-family:"HelveticaNeue-Thin", Helvetica;
 }
 
-div#menubar {
+/* Contains the menubar and the full menu area*/
+div#menu {
+	background-color: inherit;
 	border-right: 1px solid #666666;
 	display: inline;
-	float: left;
 	height: 100%;
 	padding-top: 10px;
+	position: fixed;
 	text-align: center;
-	width: 50;
+	top: 0px;
+}
+
+/* Only contains the full menu info (usually hidden) */
+div#menuarea {
+	color: #AAAAAA;
+	float: left;
+	margin-left: 10px;
+	margin-right: 10px;
+	overflow: hidden;
+	word-wrap: break-word;
+	width: 300px;
+}
+
+span.info-title {
+	color: #FFFFFF;
+}
+
+/* Only contains the menu buttons */
+div#menubar {
+	float: right;
+	width: 50px;
 }
 
 img.menuicon {
@@ -20,17 +43,23 @@ img.menuicon {
 	width: 25px;
 }
 
+img.menuicon.disabled {
+	opacity: 0.2;
+}
+
+img.menuicon.disabled:hover {
+	opacity: 0.2;
+}
+
 img.menuicon:hover {
 	opacity:1;
 }
 
 div#view {
 	display: inline-block;
-	margin-left: 10px;
 	height: 100%;
 	text-align: center;
-	/* 100% - menubar width - menubar border - view left margin*/
-	width: calc(100% - 50px - 1px - 10px);
+	width: 100%;
 }
 
 input[type="text"] {
@@ -70,5 +99,5 @@ img.thumbnail:hover {
 
 img.selected-image {
 	border: 1px solid #666666;
-	width: 100%;
+	max-width: 80%;
 }
