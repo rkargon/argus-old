@@ -28,7 +28,8 @@ class Config(Base):
 
 
 class ImageFile(Base):
-    """ Represents a single image file.
+    """
+    Represents a single image file.
     """
     __tablename__ = 'imagefile'
 
@@ -44,7 +45,8 @@ class ImageFile(Base):
 
 
 class Tag(Base):
-    """ Represents a tag.
+    """
+    Represents a tag.
     """
     __tablename__ = 'tag'
 
@@ -61,3 +63,14 @@ class Tag(Base):
 
     def as_dict(self):
         return {'tag_id': self.tag_id, 'name': self.name}
+
+    @staticmethod
+    def sanitize_tag_name(name):
+        """
+        Sanitizes a tag name by converting to lower case, making spaces into dashes, and removing non-alphanumeric
+        characters.
+        """
+        name = re.sub(r'\s+', '-', name.lower().strip().lstrip())
+        name = re.sub(r'[^0-9a-z\-]', '', name)
+        return name
+

@@ -7,6 +7,7 @@ import os
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 
 from model import Base, ImageFile, Tag
 
@@ -57,7 +58,8 @@ class Argus:
             else:
                 # use subdirectory names as tags
                 tag_names = rel_path.split('/')
-                tags = [Tag(name=tn) for tn in tag_names]
+                tag_names = map(Tag.sanitize_tag_name, tag_names)
+                tags = [self.get_tag(s, tn) for tn in tag_names]
             for f in files:
                 image_path = os.path.join(current_dir, f)
                 img_local_path = os.path.relpath(image_path, directory)
@@ -67,7 +69,7 @@ class Argus:
                 if mime_type[0] is None:
                     continue
                 if mime_type[0].startswith('image'):
-                    image_file = ImageFile(path=img_local_path)
+                    image_file = ImageFile(path=unicode(img_local_path, encoding='utf-8'))
                     image_file.tags = tags
                     images.append(image_file)
         s.add_all(images)
@@ -146,3 +148,16 @@ class Argus:
         s = self.Session()
         images = s.query(ImageFile).filter(ImageFile.tags.any(Tag.name.in_(tags))).all()
         return images
+
+    def get_tag(self, session, tag_name):
+        """
+        If a tag exists, return the tag with the name 'tag_name'
+        Otherwise, create new tag.
+        :return: A Tag object
+        """
+        try:
+            return session.query(Tag).filter(Tag.name == tag_name).one()
+        except NoResultFound:
+            new_tag = Tag(name=tag_name)
+            session.add(new_tag)
+            return new_tag
