@@ -136,3 +136,17 @@ app.directive('ngEnter', function () {
         });
     };
 });
+
+app.directive('tagInput', function(){
+	return {
+		restrict: 'E',
+		// require: 'ngModel',
+		templateUrl: '/static/tag-input.html',
+		scope: {
+			tags: '=',
+		},
+		link: function(scope, element, attrs) {
+			return;
+		}
+	};
+});

@@ -41,7 +41,7 @@ class ImageFile(Base):
         return '<ImageFile(id=%s, path="%s")' % (self.imagefile_id, self.path)
 
     def as_dict(self):
-        return {'imagefile_id': self.imagefile_id, 'path': self.path}
+        return {'imagefile_id': self.imagefile_id, 'path': self.path, 'tags': [t.name for t in self.tags]}
 
 
 class Tag(Base):

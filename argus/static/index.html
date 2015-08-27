@@ -33,7 +33,7 @@
 			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo }">
 			<br><br> 
 			<!-- View DB Info -->
-			<img class="menuicon" title="info" src="/static/images/info.png" ng-class="{ disabled: !dbInfo }" ng-click="dbInfo && showMenu('info')">
+			<img class="menuicon" title="info" src="/static/images/info.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="dbInfo && showMenu('info')">
 			<br><br> 
 			<!-- Help -->
 			<img class="menuicon" title="help" src="/static/images/help.png"> 
@@ -42,7 +42,7 @@
 	</div>
 
 	<div id="view">	
-		<input id="querybar" placeholder="Query: " type="text" ng-model="query" ng-enter="sendQuery()"></input>
+		<input class="querybar" placeholder="Query: " type="text" ng-model="query" ng-enter="sendQuery()">
 		
 		<div id="image-container">
 			<!-- List of thumbails -->
@@ -50,7 +50,8 @@
 
 			<!-- Single selected image -->
 			<span ng-if="selectedImage">
-				<img class="selected-image" ng-src="{{ '/db-image/' + selectedImage.path }}">
+				<img class="selected-image" ng-src="{{ '/db-image/' + selectedImage.path }}" ng-click="deselectImage()">
+				<tag-input tags="selectedImage.tags"></tag-input>
 			</span>
 		</div>
 	</div>
