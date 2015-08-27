@@ -1,11 +1,11 @@
 <html>
 <head>
-<title>Agus</title>
+<title>Argus</title>
 
 <link rel="stylesheet" type="text/css" href="/static/app.css">
 <!-- Use local files in development: -->
-<script src="/static/lib/jquery.min.js"></script>
-<script src="/static/lib/angular.min.js"></script>
+<script src="/static/js-lib/jquery.min.js"></script>
+<script src="/static/js-lib/angular.min.js"></script>
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script> -->
 <script src="/static/app.js"></script>
@@ -33,7 +33,7 @@
 			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo }">
 			<br><br> 
 			<!-- View DB Info -->
-			<img class="menuicon" title="info" src="/static/images/info.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="dbInfo && showMenu('info')">
+			<img class="menuicon" title="info" src="/static/images/info.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="dbInfo.db_name && showMenu('info')">
 			<br><br> 
 			<!-- Help -->
 			<img class="menuicon" title="help" src="/static/images/help.png"> 
