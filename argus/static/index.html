@@ -10,6 +10,7 @@
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script> -->
 <script src="/static/app.js"></script>
 <script src="/static/db-service.js"></script>
+<script src="/static/util.js"></script>
 </head>
 <body ng-app="argusUI" ng-controller="argusViewCtrl">
 	<div id="menu">
@@ -42,7 +43,7 @@
 	</div>
 
 	<div id="view">	
-		<input class="querybar" placeholder="Query: " type="text" ng-model="query" ng-enter="sendQuery()">
+		<input class="querybar" placeholder="Query: " type="text" ng-model="query" on-enter="sendQuery()">
 		
 		<div id="image-container">
 			<!-- List of thumbails -->
