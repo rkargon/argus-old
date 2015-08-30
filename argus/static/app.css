@@ -117,14 +117,17 @@ div.taginput-box {
 }
 
 div.taginput-tag {
-	display: inline;
+	display: inline-block;
 	background-color: #FFFFFF;
 	border: 2px solid #FFFFFF;
 	border-radius: 5px;
 	color: #272822;
 	font-size: 1em;
 	margin: 5px;
-	padding: 2px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 input.taginput-text {

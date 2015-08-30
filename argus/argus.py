@@ -129,14 +129,14 @@ class Argus:
         img = s.query(ImageFile).filter(ImageFile.imagefile_id == image_id).one()
         return img.tags
 
-    def add_image_tags(self, image_id, tag_names):
+    def set_image_tags(self, image_id, tag_names):
         """
         Adds a set of tags to a given image.
         """
         s = self.Session()
         image_file = s.query(ImageFile).filter(ImageFile.imagefile_id == image_id).one()
-        tags = [Tag(name=tn) for tn in tag_names]
-        image_file.tags.extend(tags)
+        tags = [self.get_tag(s, tn) for tn in tag_names]
+        image_file.tags = tags
         s.commit()
 
     def get_images_by_tags(self, tags):

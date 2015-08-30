@@ -23,14 +23,17 @@ factory('DBService', ['$http', function($http){
 		return $http.get('/get-all-images/');
 	};
 
-	DBService.addImageTags = function(img_id, tag_names){
-		return $http.post('/add-image-tags/'+img_id, {tag_names: tag_names});
+	DBService.getImageTags = function(img_id){
+		return $http.get('/get-image-tags/'+img_id);
+	};
+
+	DBService.setImageTags = function(img_id, tag_names){
+		return $http.post('/set-image-tags/'+img_id, {tag_names: tag_names});
 	};
 
 	DBService.getImagesByTags = function(tag_names){
 		return $http.post('/get-images-by-tags/', {tag_names: tag_names});
 	};
-
 
 	DBService.getDBInfo = function(){
 		return $http.get('/get-db-info');

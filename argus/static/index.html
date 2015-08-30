@@ -22,6 +22,9 @@
 				<br><br>
 				<span class="info-title"> Image count: </span> {{ dbInfo.image_count }}
 			</div>
+			<div ng-if="menuStatus == 'help'">
+				lol you need help
+			</div>
 		</div>
 		<div id="menubar">
 			<!-- Open a DB -->
@@ -31,13 +34,13 @@
 			<img class="menuicon" title="create new database" src="/static/images/new.png" ng-click="newDB('test_db.sqlite', 'argus/tests/sample_walls/')">
 			<br><br> 
 			<!-- Update the DB -->
-			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo }">
+			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo }" ng-click="updateDB()">
 			<br><br> 
 			<!-- View DB Info -->
 			<img class="menuicon" title="info" src="/static/images/info.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="dbInfo.db_name && showMenu('info')">
 			<br><br> 
 			<!-- Help -->
-			<img class="menuicon" title="help" src="/static/images/help.png"> 
+			<img class="menuicon" title="help" src="/static/images/help.png" ng-click="dbInfo.db_name && showMenu('help')"> 
 			<br><br> 
 		</div>
 	</div>
@@ -52,7 +55,7 @@
 			<!-- Single selected image -->
 			<span ng-if="selectedImage">
 				<img class="selected-image" ng-src="{{ '/db-image/' + selectedImage.path }}" ng-click="deselectImage()">
-				<tag-input tags="selectedImage.tags"></tag-input>
+				<tag-input tags="selectedImage.tags" on-enter="setTags(selectedImage)"></tag-input>
 			</span>
 		</div>
 	</div>

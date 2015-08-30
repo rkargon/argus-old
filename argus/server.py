@@ -77,8 +77,8 @@ def get_image_tags(img_id):
     return jsonify({'tags': serialized_tags}), 202
 
 
-@app.route('/add-image-tags/<int:img_id>', methods=['POST'])
-def add_image_tags(img_id):
+@app.route('/set-image-tags/<int:img_id>', methods=['POST'])
+def set_image_tags(img_id):
     """
     Adds a set of given tags to the database
     Input JSON: { tag_names: [<tag names...>] }
@@ -86,7 +86,7 @@ def add_image_tags(img_id):
     :return: 202 status
     """
     tag_names = request.json.get('tag_names')
-    argus.add_image_tags(img_id, tag_names)
+    argus.set_image_tags(img_id, tag_names)
     return '', 202
 
 

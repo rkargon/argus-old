@@ -120,6 +120,16 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 			};
 		}
 	}
+
+	$scope.setTags = function(image){
+		DBService.setImageTags(image.imagefile_id, image.tags)
+			.success(function(){
+				console.log("Successfully set image tags.");
+			})
+			.error(function(){
+				console.log("Failed to set image tags.");
+			});
+	}
 }]);
 
 // A directive that binds a function to an 'Enter' keypress event.
