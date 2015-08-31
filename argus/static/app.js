@@ -9,7 +9,8 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 	$scope.menuStatus = null;
 	// The current result set of images
 	$scope.queryResult = null;
-	$scope.query = null;
+	// An array of tags representing a query
+	$scope.query = [];
 	// The selected image (and its index in the resultset)
 	$scope.selectedImage = null;
 	$scope.selectedIndex = null;
@@ -56,17 +57,13 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 	// Send a query to the database
 	// TODO fancy things like AND and OR
 	$scope.sendQuery = function(){
+		console.log("sendquery");
 		$scope.queryResult = null;
-		if(!$scope.query){
+		if(!$scope.query || $scope.query.length == 0){
 			return;
 		}
-		var tag_names = $scope.query.split(" ").filter(function(e){return e.length;})
-		if (tag_names.length == 0){
-			return;
-		}
-
 		// send tag names to server
-		DBService.getImagesByTags(tag_names)
+		DBService.getImagesByTags($scope.query)
 		.success(function(response){
 			$scope.queryResult = response.images;
 			console.log("Successfully queried database");
@@ -91,7 +88,7 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 	// clears the current query (e.g. when starting a new query)
 	$scope.clearQuery = function(){
 		$scope.deselectImage();
-		$scope.query = null;
+		$scope.query = [];
 		$scope.queryResult = null;
 	}
 
@@ -132,34 +129,19 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 	}
 }]);
 
-// A directive that binds a function to an 'Enter' keypress event.
-app.directive('onEnter', function () {
-	return function (scope, element, attrs) {
-		element.bind("keydown keypress", function (event) {
-			if(event.which === 13) {
-				scope.$apply(function (){
-					scope.$eval(attrs.onEnter);
-				});
-
-				event.preventDefault();
-			}
-		});
-	};
-});
-
 // A textbox that allows user to enter tags. Tags are automatically separated by spaces. 
 app.directive('tagInput', function(){
 	return {
 		restrict: 'E',
 		templateUrl: '/static/tag-input.html',
 		scope: {
-			tags: '=',
+			onEnter: '&',
+			tags: '='
 		},
 		link: function(scope, element, attrs) {
 			// keeps track if list of tags has been modified
 			scope.modified = false;
 			scope.$watch('modified', function(){
-				console.log("a");
 				var boxElement = angular.element('div.taginput-box');
 				if (scope.modified){
 					boxElement.addClass('modified');				
@@ -170,34 +152,43 @@ app.directive('tagInput', function(){
 
 			element.bind("keydown keypress", function (event) {
 				// when space is pressed, create new tag
-				if (event.which === 32) {
-					scope.modified = true;
-					scope.$apply(function (){
-						var textinput = angular.element('input.taginput-text');
-						var newTagName = sanitizeTagName(textinput.val());
+				if (event.which === 32 || event.which === 13) {
+					scope.$apply(function(){
+						scope.modified = true;
+						var textinput = element[0].querySelector('input.taginput-text');
+						var newTagName = sanitizeTagName($(textinput).val());
 						// only add unique, new tags
+						console.log("preif");
+						console.log(scope.newTagName);
+						console.log(scope.tags);
 						if (newTagName.length && scope.tags.indexOf(newTagName) == -1){
+							console.log("post if");
 							scope.tags.push(newTagName);
 						}
-						textinput.val("");
+						$(textinput).val("");
 					});
-
+					
 					event.preventDefault();
 				}
 				// if no text, go back to editing previous tag when backspace is pressed.
-				else if (event.which === 8) {
-					scope.modified = true;
-					var textinput = angular.element('input.taginput-text');
-					if (textinput.val().length == 0){
-						scope.$apply(function(){
+				if (event.which === 8) {
+					scope.$apply(function(){
+						scope.modified = true;
+						var textinput = element[0].querySelector('input.taginput-text');
+						if ($(textinput).val().length == 0){
 							var lastTag = scope.tags.pop();
-							textinput.val(lastTag);
-						});
-					}
+							$(textinput).val(lastTag);
+						}
+					});
+					
 				}
 				// When enter is pressed, directive's value is "saved" and is no longer "modified".
-				else if (event.which === 13){
-					scope.modified = false;
+				if (event.which === 13){
+					scope.$apply(function(){
+						scope.modified = false;
+						scope.onEnter();
+					});
+					event.preventDefault();
 				}
 			});
 			return;
