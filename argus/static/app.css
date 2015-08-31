@@ -107,6 +107,7 @@ img.selected-image:hover {
 }
 
 div.taginput-box {
+	border: 1px solid #666666;
 	font-size: 1.5em;
 	padding: 5px;
 	margin-left: auto;
@@ -114,6 +115,10 @@ div.taginput-box {
 	margin-top: 50px;
 	text-align: left;
 	width: 50%;
+}
+
+#selected-image-tags div.taginput-box.modified {
+	border-color:#FF6666;
 }
 
 div.taginput-tag {

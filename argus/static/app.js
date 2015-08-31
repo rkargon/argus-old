@@ -156,9 +156,22 @@ app.directive('tagInput', function(){
 			tags: '=',
 		},
 		link: function(scope, element, attrs) {
+			// keeps track if list of tags has been modified
+			scope.modified = false;
+			scope.$watch('modified', function(){
+				console.log("a");
+				var boxElement = angular.element('div.taginput-box');
+				if (scope.modified){
+					boxElement.addClass('modified');				
+				} else {
+					boxElement.removeClass('modified');
+				}
+			});
+
 			element.bind("keydown keypress", function (event) {
 				// when space is pressed, create new tag
 				if (event.which === 32) {
+					scope.modified = true;
 					scope.$apply(function (){
 						var textinput = angular.element('input.taginput-text');
 						var newTagName = sanitizeTagName(textinput.val());
@@ -173,6 +186,7 @@ app.directive('tagInput', function(){
 				}
 				// if no text, go back to editing previous tag when backspace is pressed.
 				else if (event.which === 8) {
+					scope.modified = true;
 					var textinput = angular.element('input.taginput-text');
 					if (textinput.val().length == 0){
 						scope.$apply(function(){
@@ -180,6 +194,10 @@ app.directive('tagInput', function(){
 							textinput.val(lastTag);
 						});
 					}
+				}
+				// When enter is pressed, directive's value is "saved" and is no longer "modified".
+				else if (event.which === 13){
+					scope.modified = false;
 				}
 			});
 			return;

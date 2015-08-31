@@ -55,7 +55,7 @@
 			<!-- Single selected image -->
 			<span ng-if="selectedImage">
 				<img class="selected-image" ng-src="{{ '/db-image/' + selectedImage.path }}" ng-click="deselectImage()">
-				<tag-input tags="selectedImage.tags" on-enter="setTags(selectedImage)"></tag-input>
+				<tag-input id="selected-image-tags" tags="selectedImage.tags" on-enter="setTags(selectedImage)"></tag-input>
 			</span>
 		</div>
 	</div>
