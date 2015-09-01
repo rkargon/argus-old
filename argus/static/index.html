@@ -46,7 +46,7 @@
 	</div>
 
 	<div id="view">	
-		<tag-input tags="query" on-enter="sendQuery()"></tag-input>
+		<tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..."></tag-input>
 		
 		<div id="image-container">
 			<!-- List of thumbails -->
@@ -55,7 +55,7 @@
 			<!-- Single selected image -->
 			<span ng-if="selectedImage">
 				<img class="selected-image" ng-src="{{ '/db-image/' + selectedImage.path }}" ng-click="deselectImage()">
-				<tag-input id="selected-image-tags" tags="selectedImage.tags" on-enter="setTags(selectedImage)"></tag-input>
+				<tag-input id="selected-image-tags" tags="selectedImage.tags" on-enter="setTags(selectedImage)" place-holder="Enter tags here..."></tag-input>
 			</span>
 		</div>
 	</div>

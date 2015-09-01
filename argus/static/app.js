@@ -136,6 +136,7 @@ app.directive('tagInput', function(){
 		templateUrl: '/static/tag-input.html',
 		scope: {
 			onEnter: '&',
+			placeHolder: '@',
 			tags: '='
 		},
 		link: function(scope, element, attrs) {
@@ -158,11 +159,7 @@ app.directive('tagInput', function(){
 						var textinput = element[0].querySelector('input.taginput-text');
 						var newTagName = sanitizeTagName($(textinput).val());
 						// only add unique, new tags
-						console.log("preif");
-						console.log(scope.newTagName);
-						console.log(scope.tags);
 						if (newTagName.length && scope.tags.indexOf(newTagName) == -1){
-							console.log("post if");
 							scope.tags.push(newTagName);
 						}
 						$(textinput).val("");
@@ -173,9 +170,9 @@ app.directive('tagInput', function(){
 				// if no text, go back to editing previous tag when backspace is pressed.
 				if (event.which === 8) {
 					scope.$apply(function(){
-						scope.modified = true;
 						var textinput = element[0].querySelector('input.taginput-text');
 						if ($(textinput).val().length == 0){
+							scope.modified = true;
 							var lastTag = scope.tags.pop();
 							$(textinput).val(lastTag);
 						}
