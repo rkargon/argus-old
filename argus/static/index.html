@@ -34,7 +34,7 @@
 			<img class="menuicon" title="create new database" src="/static/images/new.png" ng-click="newDB('test_db.sqlite', 'argus/tests/sample_walls/')">
 			<br><br> 
 			<!-- Update the DB -->
-			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo }" ng-click="updateDB()">
+			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="updateDB()">
 			<br><br> 
 			<!-- View DB Info -->
 			<img class="menuicon" title="info" src="/static/images/info.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="dbInfo.db_name && showMenu('info')">
@@ -47,6 +47,10 @@
 
 	<div id="view">	
 		<tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..."></tag-input>
+		<div id="querybuttons">
+			<img class="menuicon" title="select all" src="/static/images/all.png" ng-click="dbInfo.db_name && showMenu('help')">
+			<img class="menuicon" title="show recent" src="/static/images/recent.png" ng-click="dbInfo.db_name && showMenu('help')">
+		</div>
 		
 		<div id="image-container">
 			<!-- List of thumbails -->

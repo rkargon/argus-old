@@ -2,28 +2,8 @@
 
 var app = angular.module('argusUI', []);
 
-app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBService){
-	// info on the database
-	$scope.dbInfo = null;
-	// Which menu is currently open. If null, no menu is shown.
-	$scope.menuStatus = null;
-	// The current result set of images
-	$scope.queryResult = null;
-	// An array of tags representing a query
-	$scope.query = [];
-	// The selected image (and its index in the resultset)
-	$scope.selectedImage = null;
-	$scope.selectedIndex = null;
-
-	DBService.getDBInfo()
-	.success(function(response){
-		$scope.dbInfo = response.info;
-	})
-	.error(function(){
-		console.log("Could not get DB info.");
-	});
-
-	/* EVERYTHING BELOW THIS IS FUNCTION DECALRATIONS */
+app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($scope, $document, DBService){
+	/* FUNCTION DECLARATIONS */
 
 	// Load an existing database
 	$scope.loadDB = function(db_path){
@@ -85,6 +65,21 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 		$scope.selectedImage = null;
 	};
 
+	// cycle the selected image among the query result moving by 'inc' places in the array.
+	$scope.cycleImage = function(inc){
+		if (!$scope.selectedImage){
+			return;
+		}
+
+		// get new index, mod out by length of array to get a valid array index
+		var i = $scope.selectedIndex + inc;
+		var n = $scope.queryResult.length;
+		i = ((i%n)+n)%n;
+
+		$scope.selectedIndex = i;
+		$scope.selectedImage = $scope.queryResult[i];
+	}
+
 	// clears the current query (e.g. when starting a new query)
 	$scope.clearQuery = function(){
 		$scope.deselectImage();
@@ -127,9 +122,44 @@ app.controller('argusViewCtrl', ['$scope', 'DBService', function($scope, DBServi
 				console.log("Failed to set image tags.");
 			});
 	}
+
+	/* CONTROLLER INITIALIZATION */
+
+	// info on the database
+	$scope.dbInfo = null;
+	// Which menu is currently open. If null, no menu is shown.
+	$scope.menuStatus = null;
+	// The current result set of images
+	$scope.queryResult = null;
+	// An array of tags representing a query
+	$scope.query = [];
+	// The selected image (and its index in the resultset)
+	$scope.selectedImage = null;
+	$scope.selectedIndex = null;
+
+	// bind tab key for scrolling through selected images
+	$document.bind("keydown", function(event){
+		// check for tab key
+		if (event.which === 9){
+			var inc = event.shiftKey ? -1 : 1;
+			$scope.$apply(function(){
+				$scope.cycleImage(inc);
+			});
+			event.preventDefault();
+		} 
+	});
+
+	DBService.getDBInfo()
+	.success(function(response){
+		$scope.dbInfo = response.info;
+	})
+	.error(function(){
+		console.log("Could not get DB info.");
+	});
 }]);
 
 // A textbox that allows user to enter tags. Tags are automatically separated by spaces. 
+// Pressing enter 'submits' the tags by executing the expression passed to onEnter. 
 app.directive('tagInput', function(){
 	return {
 		restrict: 'E',
@@ -152,7 +182,7 @@ app.directive('tagInput', function(){
 			});
 
 			element.bind("keydown keypress", function (event) {
-				// when space is pressed, create new tag
+				// when space or enter is pressed, create new tag
 				if (event.which === 32 || event.which === 13) {
 					scope.$apply(function(){
 						scope.modified = true;

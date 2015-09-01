@@ -4,6 +4,14 @@ body {
 	font-family:"HelveticaNeue-Thin", Helvetica;
 }
 
+button {
+	background-color: inherit;
+	color: inherit;
+	border: solid 1px #666666;
+	border-radius: 1px;
+	font: inherit;
+}
+
 /* Contains the menubar and the full menu area*/
 div#menu {
 	background-color: inherit;
@@ -62,6 +70,11 @@ div#view {
 	width: 100%;
 }
 
+div#querybuttons img.menuicon {
+	margin: 10px;
+	width: 30px;
+}
+
 input[type="text"] {
 	background-color: inherit;
 	border: 1px solid #666666;
@@ -69,19 +82,6 @@ input[type="text"] {
 	font-family: inherit;
 	outline:none;
 }
-
-input[type="text"]:focus {
-	border-color: #AAAAAA;
-}
-
-/*input.querybar {
-	font-size: 1.5em;
-	padding: 5px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: 50px;
-	width: 50%;
-}*/
 
 div#image-container {
 	margin: 50px;
@@ -108,6 +108,7 @@ img.selected-image:hover {
 
 div.taginput-box {
 	border: 1px solid #666666;
+	display:inline-block;
 	font-size: 1.5em;
 	padding: 5px;
 	margin-left: auto;
