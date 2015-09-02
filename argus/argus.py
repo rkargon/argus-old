@@ -121,6 +121,15 @@ class Argus:
         s = self.Session()
         return s.query(ImageFile).all()
 
+    def get_all_tags(self):
+        """
+        Gets all tags currently in the database.
+        :return: A list of Tag objects
+        """
+        # TODO merge this into a generalized query function
+        s = self.Session()
+        return s.query(Tag).all()
+
     def get_image_tags(self, image_id):
         """
         Returns the set of tags for an image, given by its imagefile_id.

@@ -45,7 +45,8 @@
 		</div>
 	</div>
 
-	<div id="view">	
+	<h1 id="no-db-message" ng-if="!dbInfo.db_name">Load a database using the buttons on the left.</h1>
+	<div id="view" ng-if="dbInfo.db_name">	
 		<tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..."></tag-input>
 		<div id="querybuttons">
 			<img class="menuicon" title="select all" src="/static/images/all.png" ng-click="dbInfo.db_name && getAllImages()">
@@ -53,13 +54,15 @@
 		</div>
 		
 		<div id="image-container">
+			<h1 ng-if="!query.length && !queryResult.length">Type in a query into the search bar above to view images.</h1>
+
 			<!-- List of thumbails -->
 			<img class="thumbnail" ng-if="!selectedImage" ng-repeat="img in queryResult" ng-src="{{ '/db-image/' +  img.path }}" ng-click="selectImage($index)">
 
 			<!-- Single selected image -->
 			<span ng-if="selectedImage">
 				<img class="selected-image" ng-src="{{ '/db-image/' + selectedImage.path }}" ng-click="deselectImage()">
-				<tag-input id="selected-image-tags" tags="selectedImage.tags" on-enter="setTags(selectedImage)" place-holder="Enter tags here..."></tag-input>
+				<tag-input id="selected-image-tags" tags="selectedImage.tags" on-enter="setTags(selectedImage)" place-holder="Enter tags here..." all-tags="allTags"></tag-input>
 			</span>
 		</div>
 	</div>

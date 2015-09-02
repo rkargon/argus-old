@@ -13,7 +13,7 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 				// TODO show most recent images when db is loaded?
 				// Or somehow display fact that database is connected
 				console.log("Successfully loaded DB");
-				$scope.dbInfo = response.info;
+				$scope.getDBInfo();
 			})
 		.error(function(){
 			console.log("Failed to load DB");
@@ -27,7 +27,7 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 		.success(function(response){
 				// TODO show most recent images when db is loaded?
 				console.log("Successfully loaded new DB");
-				$scope.dbInfo = response.info;
+				$scope.getDBInfo();
 			})
 		.error(function(){
 			console.log("Failed to load new DB");
@@ -42,6 +42,16 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 			})
 			.error(function(){
 				console.log("Failed to load all images.");
+			});
+	}
+
+	$scope.getAllTags = function(){
+		DBService.getAllTags()
+			.success(function(response){
+				$scope.allTags = response.tags.map(function(t){ return t.name; });
+			})
+			.error(function(){
+				console.log("Failed to load all tags.");
 			});
 	}
 
@@ -112,16 +122,23 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 			$scope.menuStatus = menuName;
 			switch ($scope.menuStatus){
 				case 'info':
-				DBService.getDBInfo()
-				.success(function(response){
-					$scope.dbInfo = response.info;
-				})
-				.error(function(){
-					console.log("Could not get DB info.");
-				});
+				$scope.getDBInfo();
 				break;
 			};
 		}
+	}
+
+	$scope.getDBInfo = function(){
+		DBService.getDBInfo()
+		.success(function(response){
+			$scope.dbInfo = response.info;
+			if($scope.dbInfo.db_name){
+				$scope.getAllTags();
+			}
+		})
+		.error(function(){
+			console.log("Could not get DB info.");
+		});
 	}
 
 	$scope.setTags = function(image){
@@ -136,14 +153,16 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 
 	/* CONTROLLER INITIALIZATION */
 
+	// set of all tags in DB
+	$scope.allTags = [];
 	// info on the database
 	$scope.dbInfo = null;
 	// Which menu is currently open. If null, no menu is shown.
 	$scope.menuStatus = null;
-	// The current result set of images
-	$scope.queryResult = null;
 	// An array of tags representing a query
 	$scope.query = [];
+	// The current result set of images
+	$scope.queryResult = null;
 	// The selected image (and its index in the resultset)
 	$scope.selectedImage = null;
 	$scope.selectedIndex = null;
@@ -160,13 +179,7 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 		} 
 	});
 
-	DBService.getDBInfo()
-	.success(function(response){
-		$scope.dbInfo = response.info;
-	})
-	.error(function(){
-		console.log("Could not get DB info.");
-	});
+	$scope.getDBInfo();
 }]);
 
 // A textbox that allows user to enter tags. Tags are automatically separated by spaces. 
@@ -176,6 +189,7 @@ app.directive('tagInput', function(){
 		restrict: 'E',
 		templateUrl: '/static/tag-input.html',
 		scope: {
+			allTags: '=?',
 			onEnter: '&',
 			placeHolder: '@',
 			tags: '='

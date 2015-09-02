@@ -23,6 +23,10 @@ factory('DBService', ['$http', function($http){
 		return $http.get('/get-all-images/');
 	};
 
+	DBService.getAllTags = function(){
+		return $http.get('/get-all-tags/');
+	};
+
 	DBService.getImageTags = function(img_id){
 		return $http.get('/get-image-tags/'+img_id);
 	};

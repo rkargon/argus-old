@@ -4,6 +4,11 @@ body {
 	font-family:"HelveticaNeue-Thin", Helvetica;
 }
 
+h1, h2, h3, h4, h5, h6 {
+	font-weight: inherit;
+	color: #666;
+}
+
 button {
 	background-color: inherit;
 	color: inherit;
@@ -61,6 +66,11 @@ img.menuicon.disabled:hover {
 
 img.menuicon:hover {
 	opacity:1;
+}
+
+h1#no-db-message {
+	text-align: center;
+	margin-top: 100px;
 }
 
 div#view {
@@ -135,6 +145,10 @@ div.taginput-tag {
 	padding-left: 5px;
 	padding-right: 5px;
 	position:relative;
+}
+
+div.taginput-tag.new-tag {
+	border-color: #6C6;
 }
 
 div.taginput-tag:hover {

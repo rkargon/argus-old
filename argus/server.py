@@ -65,6 +65,17 @@ def get_all_images():
     return jsonify({'images': serialized_image_files}), 202
 
 
+@app.route('/get-all-tags/', methods=['GET'])
+def get_all_tags():
+    """
+    Returns a list of all tags in the database.
+    :return: A JSON string {tags: [ <tags...> ] }
+    """
+    tags = argus.get_all_tags()
+    serialized_tags = [t.as_dict() for t in tags]
+    return jsonify({'tags': serialized_tags}), 202
+
+
 @app.route('/get-image-tags/<int:img_id>', methods=['GET'])
 def get_image_tags(img_id):
     """
