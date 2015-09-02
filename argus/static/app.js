@@ -34,23 +34,34 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 		});
 	};
 
+	$scope.getAllImages = function(){
+		$scope.clearQuery();
+		DBService.getAllImages()
+			.success(function(response){
+				$scope.queryResult = response.images;
+			})
+			.error(function(){
+				console.log("Failed to load all images.");
+			});
+	}
+
 	// Send a query to the database
 	// TODO fancy things like AND and OR
 	$scope.sendQuery = function(){
-		console.log("sendquery");
+		$scope.deselectImage();
 		$scope.queryResult = null;
 		if(!$scope.query || $scope.query.length == 0){
 			return;
 		}
 		// send tag names to server
 		DBService.getImagesByTags($scope.query)
-		.success(function(response){
-			$scope.queryResult = response.images;
-			console.log("Successfully queried database");
-		})
-		.error(function(){
-			console.log("Failed to query database.");
-		});
+			.success(function(response){
+				$scope.queryResult = response.images;
+				console.log("Successfully queried database");
+			})
+			.error(function(){
+				console.log("Failed to query database.");
+			});
 	};
 
 	// select an image from $scope.queryResult by index.
@@ -199,15 +210,15 @@ app.directive('tagInput', function(){
 				}
 				// if no text, go back to editing previous tag when backspace is pressed.
 				if (event.which === 8) {
-					scope.$apply(function(){
-						var textinput = element[0].querySelector('input.taginput-text');
-						if ($(textinput).val().length == 0){
+					var textinput = element[0].querySelector('input.taginput-text');
+					if ($(textinput).val().length == 0){
+						scope.$apply(function(){
 							scope.modified = true;
 							var lastTag = scope.tags.pop();
 							$(textinput).val(lastTag);
-						}
-					});
-					
+						});
+						event.preventDefault();
+					}
 				}
 				// When enter is pressed, directive's value is "saved" and is no longer "modified".
 				if (event.which === 13){
@@ -218,6 +229,11 @@ app.directive('tagInput', function(){
 					event.preventDefault();
 				}
 			});
+
+			scope.deleteTag = function(tag){
+				scope.modified = true;
+				scope.tags.splice(scope.tags.indexOf(tag), 1);
+			}
 			return;
 		}
 	};

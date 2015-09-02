@@ -134,6 +134,11 @@ div.taginput-tag {
 	padding-bottom: 2px;
 	padding-left: 5px;
 	padding-right: 5px;
+	position:relative;
+}
+
+div.taginput-tag:hover {
+	border-color: #C66;
 }
 
 input.taginput-text {
