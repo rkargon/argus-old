@@ -86,7 +86,7 @@ class Argus:
         db_path = os.path.join(image_folder, db_name)
         db_exists = os.path.isfile(db_path)
         self.load_database(db_path)
-        if db_exists:
+        if not db_exists:
             self.populate_db()
 
     def update_database(self):
