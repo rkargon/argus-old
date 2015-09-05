@@ -40,7 +40,7 @@
 		</div>
 	</div>
 
-	<h1 id="no-db-message" ng-if="!dbInfo.db_name">The argus server does not have a database loaded..</h1>
+	<h1 id="no-db-message" ng-if="!dbInfo.db_name">The argus server does not have a database loaded.</h1>
 	<div id="view" ng-if="dbInfo.db_name">	
 		<tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..."></tag-input>
 		<div id="querybuttons">

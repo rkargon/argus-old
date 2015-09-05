@@ -70,7 +70,6 @@ class Tag(Base):
         Sanitizes a tag name by converting to lower case, making spaces into dashes, and removing non-alphanumeric
         characters.
         """
-        name = re.sub(r'\s+', '-', name.lower().strip().lstrip())
-        name = re.sub(r'[^0-9a-z\-]', '', name)
+        name = re.sub(r'[^0-9a-z]+', '-', name.lower().strip().lstrip())
         return name
 
