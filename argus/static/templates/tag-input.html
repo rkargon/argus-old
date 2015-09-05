@@ -1,0 +1,4 @@
+<div class="taginput-box">
+	<div class="taginput-tag" ng-repeat="tag in tags" ng-click="deleteTag(tag)" ng-class="{'new-tag': allTags.indexOf(tag) < 0}">{{ tag }}</div>
+	<input class="taginput-text" type="text" placeholder="{{ placeHolder }}">
+</div>

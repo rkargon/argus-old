@@ -182,12 +182,44 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 	$scope.getDBInfo();
 }]);
 
+app.directive('paginatedImages', function(){
+	return {
+		restrict: 'E',
+		templateUrl: '/static/templates/paginated-images.html',
+		scope: {
+			adjacentPages: '@',
+			images: '=',
+			imagesPerPage: '@',
+			imgOnClick: '=?',
+		},
+		link: function(scope, element, attrs){
+			scope.adjacentPages = parseInt(scope.adjacentPages);
+			scope.imagesPerPage = parseInt(scope.imagesPerPage);
+			scope.pageNum = 1;
+			scope.maxPage = Math.floor((scope.images.length-1)/scope.imagesPerPage) + 1;
+			// keep track of max number of pages as array changes.
+			scope.$watch('images.length', function(newValue, oldValue){
+				scope.maxPage = Math.floor((scope.images.length-1)/scope.imagesPerPage) + 1;
+				console.log(scope.maxPage);
+				console.log(scope.images);
+			});
+
+			scope.setPage = function(n){
+				if(n > 0 && n <= scope.maxPage){
+					scope.pageNum = n;
+				}
+			};
+			return;
+		}
+	};
+});
+
 // A textbox that allows user to enter tags. Tags are automatically separated by spaces. 
 // Pressing enter 'submits' the tags by executing the expression passed to onEnter. 
 app.directive('tagInput', function(){
 	return {
 		restrict: 'E',
-		templateUrl: '/static/tag-input.html',
+		templateUrl: '/static/templates/tag-input.html',
 		scope: {
 			allTags: '=?',
 			onEnter: '&',
@@ -250,5 +282,30 @@ app.directive('tagInput', function(){
 			}
 			return;
 		}
+	};
+});
+
+// start - the start value
+// total - the number of elements
+// min - (optional) An overall minimum, overrides start if it's greater than start
+// max - (optional) An overall maximum, overrides total if it's smaller than the would-be maximum (start+total-1)
+app.filter('range', function() {
+	return function(input, start, total, min, max) {
+		start = parseInt(start);
+		total = parseInt(total);
+		min = parseInt(min);
+		max = parseInt(max);
+		var finalMin = start;
+		var finalMax = start + total - 1;
+		if (min != undefined) {
+			finalMin = Math.max(min, start);
+		}
+		if (max != undefined) {
+			finalMax = Math.min(max, start+total-1);
+		}
+		for (var i=finalMin; i<=finalMax; i++){
+			input.push(i);
+		}
+		return input;
 	};
 });

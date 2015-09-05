@@ -2,6 +2,7 @@
 Code for running the server.
 """
 import argparse
+import os
 
 from flask import Flask, request, jsonify, send_from_directory
 
@@ -139,7 +140,16 @@ def main():
     parser = argparse.ArgumentParser(description='Run the Argus server')
     parser.add_argument('-p', '--port', type=int, default=5000,
                         help='Specify which port the Argus server should run on.')
+    parser.add_argument('-d', '--database', type=str,
+                        help='The filename of the database to open. If the file does not exist, it is created.')
     args = parser.parse_args()
+
+    # load database
+    if args.database:
+        db_name = os.path.basename(args.database)
+        image_folder = os.path.dirname(os.path.realpath(args.database))
+        argus.new_database(db_name, image_folder)
+
     app.run(port=args.port, debug=True)
 
 if __name__ == '__main__':

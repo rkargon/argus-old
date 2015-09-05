@@ -27,12 +27,7 @@
 			</div>
 		</div>
 		<div id="menubar">
-			<!-- Open a DB -->
-			<img class="menuicon" title="open a database" src="/static/images/open.png" ng-click="loadDB('argus/tests/sample_walls/test_db.sqlite')">
-			<br><br> 
-			<!-- New DB -->
-			<img class="menuicon" title="create new database" src="/static/images/new.png" ng-click="newDB('test_db.sqlite', 'argus/tests/sample_walls/')">
-			<br><br> 
+			<br><br>
 			<!-- Update the DB -->
 			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="updateDB()">
 			<br><br> 
@@ -45,7 +40,7 @@
 		</div>
 	</div>
 
-	<h1 id="no-db-message" ng-if="!dbInfo.db_name">Load a database using the buttons on the left.</h1>
+	<h1 id="no-db-message" ng-if="!dbInfo.db_name">The argus server does not have a database loaded..</h1>
 	<div id="view" ng-if="dbInfo.db_name">	
 		<tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..."></tag-input>
 		<div id="querybuttons">
@@ -57,7 +52,8 @@
 			<h1 ng-if="!query.length && !queryResult.length">Type in a query into the search bar above to view images.</h1>
 
 			<!-- List of thumbails -->
-			<img class="thumbnail" ng-if="!selectedImage" ng-repeat="img in queryResult" ng-src="{{ '/db-image/' +  img.path }}" ng-click="selectImage($index)">
+			<paginated-images ng-if="queryResult.length && !selectedImage" adjacent-pages="5" images="queryResult" images-per-page="30" img-on-click="selectImage"></paginated-images>
+			<!-- <img class="thumbnail" ng-if="!selectedImage" ng-repeat="img in queryResult" ng-src="{{ '/db-image/' +  img.path }}" ng-click="selectImage($index)"> -->
 
 			<!-- Single selected image -->
 			<span ng-if="selectedImage">

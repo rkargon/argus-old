@@ -1,0 +1,17 @@
+<!-- <img class="thumbnail" ng-repeat="img in queryResult" ng-src="{{ '/db-image/' +  img.path }}" ng-click="imgOnClick($index)"> -->
+<img class="thumbnail" 
+	 ng-repeat="n in []|range:imagesPerPage*(pageNum-1):imagesPerPage:0:images.length-1" 
+	 ng-src="{{ '/db-image/' +  images[n].path }}" 
+	 ng-click="imgOnClick(n)">
+
+<!-- Page numbers -->
+<div ng-if="maxPage > 1">
+	<span class="page-num" ng-class="{'current-page': pageNum == 1}" ng-click="setPage(1)">1</span>
+	<span ng-if="pageNum > (adjacentPages-0) + 2">...</span>
+	<span class="page-num" 
+		  ng-repeat="n in []|range:(pageNum-adjacentPages):(2*adjacentPages + 1):2:maxPage-1" 
+		  ng-class="{'current-page': pageNum == n}" 
+		  ng-click="setPage(n)">{{ n }}</span>
+	<span ng-if="pageNum < maxPage - adjacentPages - 1">...</span>
+	<span class="page-num" ng-class="{'current-page': pageNum == maxPage}" ng-click="setPage(maxPage)">{{ maxPage }}</span>
+</div>
