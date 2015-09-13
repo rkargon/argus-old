@@ -32,7 +32,7 @@
 			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="updateDB()">
 			<br><br> 
 			<!-- View DB Info -->
-			<img class="menuicon" title="info" src="/static/images/info.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="dbInfo.db_name && showMenu('info')">
+			<img class="menuicon" title="info" src="/static/images/info.png" ng-click="showMenu('info')">
 			<br><br> 
 			<!-- Help -->
 			<img class="menuicon" title="help" src="/static/images/help.png" ng-click="dbInfo.db_name && showMenu('help')"> 
@@ -40,16 +40,15 @@
 		</div>
 	</div>
 
-	<h1 id="no-db-message" ng-if="!dbInfo.db_name">The argus server does not have a database loaded.</h1>
-	<div id="view" ng-if="dbInfo.db_name">	
+	<h1 id="no-db-message" ng-if="!dbInfo || !dbInfo.db_name">Not connected to database.</h1>
+	<div id="view" ng-if="dbInfo && dbInfo.db_name">	
 		<tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..."></tag-input>
 		<div id="querybuttons">
 			<img class="menuicon" title="select all" src="/static/images/all.png" ng-click="dbInfo.db_name && getAllImages()">
 			<img class="menuicon" title="show recent" src="/static/images/recent.png" ng-click="dbInfo.db_name && showMenu('help')">
 		</div>
-		
 		<div id="image-container">
-			<h1 ng-if="!query.length && !queryResult.length">Type in a query into the search bar above to view images.</h1>
+			<h1 ng-if="currentQuery.length && !queryResult.length"> The query {{ currentQuery }} returned no results. </h1>
 
 			<!-- List of thumbails -->
 			<paginated-images ng-if="queryResult.length && !selectedImage" adjacent-pages="5" images="queryResult" images-per-page="30" img-on-click="selectImage"></paginated-images>

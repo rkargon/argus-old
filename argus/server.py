@@ -9,7 +9,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from argus import Argus
 
 app = Flask(__name__)
-argus = Argus()
+argus = None
 
 
 @app.route('/')
@@ -142,7 +142,14 @@ def main():
                         help='Specify which port the Argus server should run on.')
     parser.add_argument('-d', '--database', type=str,
                         help='The filename of the database to open. If the file does not exist, it is created.')
+    parser.add_argument('--image-stats', action='store_true', default=False, help='Whether to load image stats '
+                                                                                  '(such as size) into the database. '
+                                                                                  'Can be slower for large image '
+                                                                                  'folders.')
     args = parser.parse_args()
+
+    global argus
+    argus = Argus(image_stats=args.image_stats)
 
     # load database
     if args.database:

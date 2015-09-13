@@ -8,6 +8,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
+from exc import ImageLoadException
 
 from model import Base, ImageFile, Tag
 
@@ -18,7 +19,7 @@ class Argus:
     The instance contains a connection to a database, and an interface for manipulating data in the database.
     """
 
-    def __init__(self):
+    def __init__(self, image_stats=True):
         """
         This is a factory that returns DB sessions.
         Thus, when connecting to a different db, we can simply modify self.Session
@@ -27,6 +28,9 @@ class Argus:
         self.Session = sessionmaker()
         self._db_name = None
         self._image_folder = None
+
+        # parameters
+        self.image_stats = image_stats
 
     def load_database(self, db_path):
         """
@@ -46,6 +50,12 @@ class Argus:
         directory = self._image_folder
 
         s = self.Session()
+
+        # remove images that no longer exist
+        for img in s.query(ImageFile).all():
+            if not os.path.isfile(img.path):
+                s.remove(img)
+
         # keep track of images already in the database
         current_images = s.query(ImageFile).all()
         current_image_paths = set([img.path for img in current_images])
@@ -61,6 +71,8 @@ class Argus:
                 tag_names = map(Tag.sanitize_tag_name, tag_names)
                 tags = [self.get_tag(s, tn) for tn in tag_names]
             for f in files:
+                if len(images) % 500 == 0:
+                    print len(images)
                 image_path = os.path.join(current_dir, f)
                 img_local_path = os.path.relpath(image_path, directory)
                 if img_local_path in current_image_paths:
@@ -69,9 +81,15 @@ class Argus:
                 if mime_type[0] is None:
                     continue
                 if mime_type[0].startswith('image'):
-                    image_file = ImageFile(path=unicode(img_local_path, encoding='utf-8'))
-                    image_file.tags = tags
-                    images.append(image_file)
+                    try:
+                        image_file = ImageFile(path=unicode(img_local_path, encoding='utf-8'))
+                        if self.image_stats:
+                            image_file.get_image_stats(directory)
+                        image_file.tags = tags
+                    except ImageLoadException:
+                        continue
+                    else:
+                        images.append(image_file)
         s.add_all(images)
         s.commit()
 
@@ -158,7 +176,8 @@ class Argus:
         images = s.query(ImageFile).filter(ImageFile.tags.any(Tag.name.in_(tags))).all()
         return images
 
-    def get_tag(self, session, tag_name):
+    @staticmethod
+    def get_tag(session, tag_name):
         """
         If a tag exists, return the tag with the name 'tag_name'
         Otherwise, create new tag.

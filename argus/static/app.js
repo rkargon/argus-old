@@ -3,6 +3,7 @@
 var app = angular.module('argusUI', []);
 
 app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($scope, $document, DBService){
+
 	/* FUNCTION DECLARATIONS */
 
 	// Load an existing database
@@ -25,7 +26,6 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 		$scope.clearDBInfo();
 		DBService.newDB(db_name, folder_path)
 		.success(function(response){
-				// TODO show most recent images when db is loaded?
 				console.log("Successfully loaded new DB");
 				$scope.getDBInfo();
 			})
@@ -33,6 +33,17 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 			console.log("Failed to load new DB");
 		});
 	};
+
+	$scope.updateDB = function(){
+		DBService.updateDB()
+		.success(function(response){
+			console.log("Successfully updated DB");
+			$scope.getDBInfo();
+		})
+		.error(function(){
+			console.log("Failed to update DB");
+		})
+	}
 
 	$scope.getAllImages = function(){
 		$scope.clearQuery();
@@ -59,6 +70,7 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 	// TODO fancy things like AND and OR
 	$scope.sendQuery = function(){
 		$scope.deselectImage();
+		$scope.currentQuery = null;
 		$scope.queryResult = null;
 		if(!$scope.query || $scope.query.length == 0){
 			return;
@@ -66,6 +78,7 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 		// send tag names to server
 		DBService.getImagesByTags($scope.query)
 			.success(function(response){
+				$scope.currentQuery = $scope.query.slice();
 				$scope.queryResult = response.images;
 				console.log("Successfully queried database");
 			})
@@ -106,6 +119,7 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 		$scope.deselectImage();
 		$scope.query = [];
 		$scope.queryResult = null;
+		$scope.currentQuery = [];
 	}
 
 	// clears the database info (e.g. when loading a new database)
@@ -163,6 +177,8 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 	$scope.query = [];
 	// The current result set of images
 	$scope.queryResult = null;
+	// The query corresponding to the current query result
+	$scope.currentQuery = [];
 	// The selected image (and its index in the resultset)
 	$scope.selectedImage = null;
 	$scope.selectedIndex = null;
@@ -200,8 +216,6 @@ app.directive('paginatedImages', function(){
 			// keep track of max number of pages as array changes.
 			scope.$watch('images.length', function(newValue, oldValue){
 				scope.maxPage = Math.floor((scope.images.length-1)/scope.imagesPerPage) + 1;
-				console.log(scope.maxPage);
-				console.log(scope.images);
 			});
 
 			scope.setPage = function(n){
