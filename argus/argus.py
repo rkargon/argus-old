@@ -54,7 +54,7 @@ class Argus:
         # remove images that no longer exist
         for img in s.query(ImageFile).all():
             if not os.path.isfile(img.path):
-                s.remove(img)
+                s.delete(img)
 
         # keep track of images already in the database
         current_images = s.query(ImageFile).all()

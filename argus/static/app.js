@@ -243,20 +243,13 @@ app.directive('tagInput', function(){
 		link: function(scope, element, attrs) {
 			// keeps track if list of tags has been modified
 			scope.modified = false;
-			scope.$watch('modified', function(){
-				var boxElement = angular.element('div.taginput-box');
-				if (scope.modified){
-					boxElement.addClass('modified');				
-				} else {
-					boxElement.removeClass('modified');
-				}
-			});
 
 			element.bind("keydown keypress", function (event) {
 				// when space or enter is pressed, create new tag
 				if (event.which === 32 || event.which === 13) {
 					scope.$apply(function(){
 						scope.modified = true;
+						scope.suggestion = null;
 						var textinput = element[0].querySelector('input.taginput-text');
 						var newTagName = sanitizeTagName($(textinput).val());
 						// only add unique, new tags
@@ -287,6 +280,28 @@ app.directive('tagInput', function(){
 						scope.onEnter();
 					});
 					event.preventDefault();
+				}
+			});
+			element.bind("input", function(event){
+				// Display a suggestion for the current tag
+				if (scope.allTags){
+					var currentText = element[0].querySelector('input.taginput-text').value;
+					currentText += String.fromCharCode()
+					if (!currentText) {
+						scope.suggestion = null;
+					} else {
+						var currentTextClean = sanitizeTagName(currentText);
+						var matchingTags = scope.allTags.filter(function(elem){
+							return (elem.indexOf(currentTextClean) == 0);
+						});
+						// TODO actually sort these somehow, ideally by frequency
+						if (matchingTags.length > 0){
+							scope.suggestion = matchingTags[0];
+						} else {
+							scope.suggestion = null;
+						}
+					}
+					scope.$apply();
 				}
 			});
 

@@ -1,4 +1,7 @@
-<div class="taginput-box">
+<div class="taginput-box" ng-class="{modified: modified}">
 	<div class="taginput-tag" ng-repeat="tag in tags" ng-click="deleteTag(tag)" ng-class="{'new-tag': allTags.indexOf(tag) < 0}">{{ tag }}</div>
-	<input class="taginput-text" type="text" placeholder="{{ placeHolder }}">
+	<span style="position:relative">
+		<p class="taginput-suggestion" type="text" ng-if="suggestion.length">{{ suggestion }}</p>
+		<input class="taginput-text" type="text" placeholder="{{ placeHolder }}">
+	</span>
 </div>
