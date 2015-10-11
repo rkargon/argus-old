@@ -162,7 +162,7 @@ class Argus:
         """
         s = self.Session()
         image_file = s.query(ImageFile).filter(ImageFile.imagefile_id == image_id).one()
-        tags = [self.get_tag(s, tn) for tn in tag_names]
+        tags = [self.get_tag(s, t['name']) for t in tag_names]
         image_file.tags = tags
         s.commit()
 
@@ -173,7 +173,8 @@ class Argus:
         :return: A list of images
         """
         s = self.Session()
-        images = s.query(ImageFile).filter(ImageFile.tags.any(Tag.name.in_(tags))).all()
+        names = [t['name'] for t in tags]
+        images = s.query(ImageFile).filter(ImageFile.tags.any(Tag.name.in_(names))).all()
         return images
 
     @staticmethod

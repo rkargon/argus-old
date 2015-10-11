@@ -235,7 +235,8 @@ app.directive('tagInput', function(){
 		restrict: 'E',
 		templateUrl: '/static/templates/tag-input.html',
 		scope: {
-			allTags: '=?',
+			allTags: '=',
+			isQUery: '=?',
 			onEnter: '&',
 			placeHolder: '@',
 			tags: '='
@@ -253,8 +254,9 @@ app.directive('tagInput', function(){
 						var textinput = element[0].querySelector('input.taginput-text');
 						var newTagName = sanitizeTagName($(textinput).val());
 						// only add unique, new tags
-						if (newTagName.length && scope.tags.indexOf(newTagName) == -1){
-							scope.tags.push(newTagName);
+						if (newTagName.length && scope.findDBTagIndex(scope.tags, newTagName) == -1){
+							var newTag = {type: 'db_tag', name: newTagName};
+							scope.tags.push(newTag);
 						}
 						$(textinput).val("");
 					});
@@ -263,12 +265,16 @@ app.directive('tagInput', function(){
 				}
 				// if no text, go back to editing previous tag when backspace is pressed.
 				if (event.which === 8) {
+					// if no tags enterred yet, behave like a regular backspace
+					if (scope.tags.length == 0){
+						return;
+					}
 					var textinput = element[0].querySelector('input.taginput-text');
 					if ($(textinput).val().length == 0){
 						scope.$apply(function(){
 							scope.modified = true;
 							var lastTag = scope.tags.pop();
-							$(textinput).val(lastTag);
+							$(textinput).val(lastTag.name);
 						});
 						event.preventDefault();
 					}
@@ -284,30 +290,36 @@ app.directive('tagInput', function(){
 			});
 			element.bind("input", function(event){
 				// Display a suggestion for the current tag
-				if (scope.allTags){
-					var currentText = element[0].querySelector('input.taginput-text').value;
-					currentText += String.fromCharCode()
-					if (!currentText) {
-						scope.suggestion = null;
+				var currentText = element[0].querySelector('input.taginput-text').value;
+				currentText += String.fromCharCode()
+				if (!currentText) {
+					scope.suggestion = null;
+				} else {
+					var currentTextClean = sanitizeTagName(currentText);
+					var matchingTags = scope.allTags.filter(function(elem){
+						return (elem.indexOf(currentTextClean) == 0);
+					});
+					// TODO actually sort these somehow, ideally by frequency
+					if (matchingTags.length > 0){
+						scope.suggestion = matchingTags[0];
 					} else {
-						var currentTextClean = sanitizeTagName(currentText);
-						var matchingTags = scope.allTags.filter(function(elem){
-							return (elem.indexOf(currentTextClean) == 0);
-						});
-						// TODO actually sort these somehow, ideally by frequency
-						if (matchingTags.length > 0){
-							scope.suggestion = matchingTags[0];
-						} else {
-							scope.suggestion = null;
-						}
+						scope.suggestion = null;
 					}
-					scope.$apply();
 				}
+				scope.$apply();
 			});
 
+			// Returns the index of a database tag in an array, based on the tag's name
+			scope.findDBTagIndex = function(array, tagName){
+				return customIndexOf(array, function(elem){
+					return elem.name == tagName;
+				});
+			}
+
+			// deletes a tag from the tag array. 
 			scope.deleteTag = function(tag){
 				scope.modified = true;
-				scope.tags.splice(scope.tags.indexOf(tag), 1);
+				scope.tags.splice(scope.findDBTagIndex(scope.tags, tag.name), 1);
 			}
 			return;
 		}

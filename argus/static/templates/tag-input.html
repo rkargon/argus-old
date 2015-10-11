@@ -1,5 +1,5 @@
 <div class="taginput-box" ng-class="{modified: modified}">
-	<div class="taginput-tag" ng-repeat="tag in tags" ng-click="deleteTag(tag)" ng-class="{'new-tag': allTags.indexOf(tag) < 0}">{{ tag }}</div>
+	<div class="taginput-tag" ng-repeat="tag in tags" ng-click="deleteTag(tag)" ng-class="{'new-tag': allTags.indexOf(tag.name) < 0}">{{ tag.name }}</div>
 	<span style="position:relative">
 		<p class="taginput-suggestion" type="text" ng-if="suggestion.length">{{ suggestion }}</p>
 		<input class="taginput-text" type="text" placeholder="{{ placeHolder }}">

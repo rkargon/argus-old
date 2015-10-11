@@ -40,8 +40,17 @@ div#menuarea {
 	width: 300px;
 }
 
-span.info-title {
+div#menuarea span.info-title {
 	color: #FFFFFF;
+}
+
+div#menuarea hr {
+	border-color: #AAA;
+}
+
+div#menuarea img {
+	width: 90%;
+	border: solid 1px #AAA;
 }
 
 /* Only contains the menu buttons */

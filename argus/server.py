@@ -62,7 +62,7 @@ def get_all_images():
     :return: A JSON string {images: [ <images...> ] }
     """
     image_files = argus.get_all_images()
-    serialized_image_files = [img.as_dict() for img in image_files]
+    serialized_image_files = [img.as_dict(tag_type=True) for img in image_files]
     return jsonify({'images': serialized_image_files}), 202
 
 
@@ -73,7 +73,7 @@ def get_all_tags():
     :return: A JSON string {tags: [ <tags...> ] }
     """
     tags = argus.get_all_tags()
-    serialized_tags = [t.as_dict() for t in tags]
+    serialized_tags = [t.as_dict(tag_type=True) for t in tags]
     return jsonify({'tags': serialized_tags}), 202
 
 
@@ -85,7 +85,7 @@ def get_image_tags(img_id):
     :return: A JSON string {tags: [ <tags...> ]}
     """
     tags = argus.get_image_tags(img_id)
-    serialized_tags = [t.as_dict() for t in tags]
+    serialized_tags = [t.as_dict(tag_type=True) for t in tags]
     return jsonify({'tags': serialized_tags}), 202
 
 
@@ -108,9 +108,10 @@ def get_images_by_tags():
     Returns all images that contain at least one of the tags in the given tag names
     :return: A JSON string {images: [<images...> ]}
     """
+    # TODO handle queries that are not just names, but actual tag/query objects
     tag_names = request.json.get('tag_names')
     images = argus.get_images_by_tags(tag_names)
-    serialized_images = [img.as_dict() for img in images]
+    serialized_images = [img.as_dict(tag_type=True) for img in images]
     return jsonify({'images': serialized_images}), 202
 
 

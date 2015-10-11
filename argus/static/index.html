@@ -21,6 +21,18 @@
 				<span class="info-title"> Database name: </span> {{ dbInfo.db_name }}
 				<br><br>
 				<span class="info-title"> Image count: </span> {{ dbInfo.image_count }}
+				<div ng-if="selectedImage">
+					<br>
+					<hr>
+					<br>
+					<span class="info-title"> Image path: </span> {{ selectedImage.path }}
+					<br><br>
+					<img ng-src="{{ '/db-image/' + selectedImage.path }}">
+					<br><br>
+					<span class="info-title"> Size: </span> {{ selectedImage.width  + " x " + selectedImage.height }}
+					<br><br>
+				</div>
+
 			</div>
 			<div ng-if="menuStatus == 'help'">
 				lol you need help
