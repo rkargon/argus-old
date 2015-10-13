@@ -54,7 +54,7 @@
 
 	<h1 id="no-db-message" ng-if="!dbInfo || !dbInfo.db_name">Not connected to database.</h1>
 	<div id="view" ng-if="dbInfo && dbInfo.db_name">	
-		<tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..." all-tags="allTags"></tag-input>
+		<tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..." all-tags="allTags" is-query="true"></tag-input>
 		<div id="querybuttons">
 			<img class="menuicon" title="select all" src="/static/images/all.png" ng-click="dbInfo.db_name && getAllImages()">
 			<img class="menuicon" title="show recent" src="/static/images/recent.png" ng-click="dbInfo.db_name && showMenu('help')">

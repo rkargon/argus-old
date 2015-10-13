@@ -5,10 +5,10 @@ Argus application code.
 import mimetypes
 import os
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
-from exc import ImageLoadException
+from exc import ImageLoadException, InvalidQueryException
 
 from model import Base, ImageFile, Tag
 
@@ -162,19 +162,27 @@ class Argus:
         """
         s = self.Session()
         image_file = s.query(ImageFile).filter(ImageFile.imagefile_id == image_id).one()
-        tags = [self.get_tag(s, t['name']) for t in tag_names]
+        tags = [self.get_tag(s, tn) for tn in tag_names]
         image_file.tags = tags
         s.commit()
 
-    def get_images_by_tags(self, tags):
-        """
-        Returns a list of all images that have at least one of the tags given.
-        :param tags: The list of tags to search for
-        :return: A list of images
-        """
+    def parse_tag_query(self, tag_query):
+        if tag_query['type'] == 'db_tag':
+            return ImageFile.tags.any(Tag.name == tag_query['name'])
+        elif tag_query['type'] == 'size':
+            return (ImageFile.width == tag_query['width']) & (ImageFile.height == tag_query['height'])
+        elif tag_query['type'] == 'width':
+            return ImageFile.width == tag_query['width']
+        elif tag_query['type'] == 'height':
+            return ImageFile.height == tag_query['height']
+        else:
+            raise InvalidQueryException
+
+    def get_images_by_query(self, tag_queries):
         s = self.Session()
-        names = [t['name'] for t in tags]
-        images = s.query(ImageFile).filter(ImageFile.tags.any(Tag.name.in_(names))).all()
+        query_filters = [self.parse_tag_query(tq) for tq in tag_queries]
+        q = s.query(ImageFile).filter(and_(*query_filters))
+        images = q.all()
         return images
 
     @staticmethod

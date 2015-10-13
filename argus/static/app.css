@@ -171,6 +171,12 @@ div.taginput-tag {
 	position:relative;
 }
 
+div.taginput-tag.size {
+	border-color: #66AACC;
+    background-color: #004444;
+    color: #66AACC;
+}
+
 div.taginput-tag.new-tag {
 	border-color: #6C6;
 }

@@ -76,7 +76,7 @@ app.controller('argusViewCtrl', ['$scope', '$document', 'DBService', function($s
 			return;
 		}
 		// send tag names to server
-		DBService.getImagesByTags($scope.query)
+		DBService.getImagesByQuery($scope.query)
 			.success(function(response){
 				$scope.currentQuery = $scope.query.slice();
 				$scope.queryResult = response.images;
@@ -236,7 +236,7 @@ app.directive('tagInput', function(){
 		templateUrl: '/static/templates/tag-input.html',
 		scope: {
 			allTags: '=',
-			isQUery: '=?',
+			isQuery: '=?',
 			onEnter: '&',
 			placeHolder: '@',
 			tags: '='
@@ -244,7 +244,6 @@ app.directive('tagInput', function(){
 		link: function(scope, element, attrs) {
 			// keeps track if list of tags has been modified
 			scope.modified = false;
-
 			element.bind("keydown keypress", function (event) {
 				// when space or enter is pressed, create new tag
 				if (event.which === 32 || event.which === 13) {
@@ -252,10 +251,10 @@ app.directive('tagInput', function(){
 						scope.modified = true;
 						scope.suggestion = null;
 						var textinput = element[0].querySelector('input.taginput-text');
-						var newTagName = sanitizeTagName($(textinput).val());
+						var newTagName = $(textinput).val();
 						// only add unique, new tags
 						if (newTagName.length && scope.findDBTagIndex(scope.tags, newTagName) == -1){
-							var newTag = {type: 'db_tag', name: newTagName};
+							var newTag = scope.createTag(newTagName);
 							scope.tags.push(newTag);
 						}
 						$(textinput).val("");
@@ -314,13 +313,57 @@ app.directive('tagInput', function(){
 				return customIndexOf(array, function(elem){
 					return elem.name == tagName;
 				});
-			}
+			};
+
+			// return a tag object based on enterred text. 
+			// tag syntax is either 'name' or 'type:data'
+			// where name, data =~ /[a-z0-9\-]+/
+			// if isQuery is false, always return a name tag.
+			scope.createTag = function(tagText){
+				var colonIndex = tagText.indexOf(':');
+				if (scope.isQuery && colonIndex != -1){
+					var tagData = tagText.substring(colonIndex+1);
+					var tagType = tagText.substring(0, colonIndex);
+					switch (tagType){
+						// tags / queries that specify a certain size
+						case 'size':
+							var sizeRegex = "^(\\d+)\\D(\\d+)$";
+							var groups = tagData.match(sizeRegex);
+							if (groups != null){
+								var width = parseInt(groups[1]);
+								var height = parseInt(groups[2]);
+								return {type: 'size', width: width, height: height};
+							}
+							break;
+						// tags / queries that specify a certain width
+						case 'width':
+							var widthRegex = "^(\\d+)$";
+							var groups = tagData.match(widthRegex);
+							if (groups != null){
+								var width = parseInt(groups[1]);
+								return {type: 'width', width: width};
+							}
+							break;
+						// tags / queries that specify a certain height
+						case 'height':
+							var heightRegex = "^(\\d+)$";
+							var groups = tagData.match(heightRegex);
+							if (groups != null){
+								var height = parseInt(groups[1]);
+								return {type: 'height', height: height};
+							}
+							break;
+					}
+				}
+				var tagName = sanitizeTagName(tagText);
+				return {type: 'db_tag', name: tagName};
+			};
 
 			// deletes a tag from the tag array. 
 			scope.deleteTag = function(tag){
 				scope.modified = true;
 				scope.tags.splice(scope.findDBTagIndex(scope.tags, tag.name), 1);
-			}
+			};
 			return;
 		}
 	};

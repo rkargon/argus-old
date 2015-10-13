@@ -97,20 +97,20 @@ def set_image_tags(img_id):
     :param img_id: The image file's id.
     :return: 202 status
     """
-    tag_names = request.json.get('tag_names')
+    tag_names = [tn['name'] for tn in request.json.get('tag_names')]
     argus.set_image_tags(img_id, tag_names)
     return '', 202
 
 
-@app.route('/get-images-by-tags/', methods=['POST'])
-def get_images_by_tags():
+@app.route('/get-images-by-query/', methods=['POST'])
+def get_images_by_query():
     """
     Returns all images that contain at least one of the tags in the given tag names
     :return: A JSON string {images: [<images...> ]}
     """
     # TODO handle queries that are not just names, but actual tag/query objects
     tag_names = request.json.get('tag_names')
-    images = argus.get_images_by_tags(tag_names)
+    images = argus.get_images_by_query(tag_names)
     serialized_images = [img.as_dict(tag_type=True) for img in images]
     return jsonify({'images': serialized_images}), 202
 
