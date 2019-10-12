@@ -72,7 +72,7 @@ class Argus:
                 tags = [self.get_tag(s, tn) for tn in tag_names]
             for f in files:
                 if len(images) % 500 == 0:
-                    print len(images)
+                    print(len(images))
                 image_path = os.path.join(current_dir, f)
                 img_local_path = os.path.relpath(image_path, directory)
                 if img_local_path in current_image_paths:

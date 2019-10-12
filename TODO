@@ -1,0 +1,5 @@
+ - Figure out keyboard input for switching images, autocomplete, etc
+ - List vs. thumbnail view
+ - Get server to process complex queries
+ - add searchable blobs of strings to images
+  - at this point, should I just use mongoDB?

@@ -1,13 +1,15 @@
 <div class="taginput-box" ng-class="{modified: modified}">
-	<div class="taginput-tag" 
-		 ng-repeat="tag in tags" 
-		 ng-click="deleteTag(tag)" 
-		 ng-class="tag.type">
-		 <span ng-if="tag.type == 'db_tag'">{{ tag.name }}</span>
-		 <span ng-if="tag.type == 'size'">{{ tag.width }} x {{ tag.height }} </span>
-		</div>
-	<span style="position:relative">
-		<p class="taginput-suggestion" type="text" ng-if="suggestion.length">{{ suggestion }}</p>
-		<input class="taginput-text" type="text" placeholder="{{ placeHolder }}">
-	</span>
+  <div class="taginput-tag" 
+       ng-repeat="tag in tags" 
+       ng-click="deleteTag(tag)" 
+       ng-class="tag.type">
+    <span ng-if="tag.type == 'db_tag'"> {{ tag.name }}</span>
+    <span ng-if="tag.type == 'size'"> {{ tag.width }} &times; {{ tag.height }} </span>
+    <span ng-if="tag.type == 'width'"> w <span ng-bind-html="tag.cmp | html"></span> {{ tag.width }} </span>
+    <span ng-if="tag.type == 'height'"> h <span ng-bind-html="tag.cmp | html"></span> {{ tag.height }} </span>
+  </div>
+  <span style="position:relative">
+    <p class="taginput-suggestion" type="text" ng-if="suggestion.length">{{ suggestion }}</p>
+    <input class="taginput-text" type="text" placeholder="{{ placeHolder }}">
+  </span>
 </div>
