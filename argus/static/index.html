@@ -1,77 +1,78 @@
-<html>
-<head>
-<title>Argus</title>
+b<html>
+  <head>
+    <title>Argus</title>
 
-<link rel="stylesheet" type="text/css" href="/static/app.css">
-<!-- Use local files in development: -->
-<script src="/static/js-lib/jquery.min.js"></script>
-<script src="/static/js-lib/angular.min.js"></script>
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script> -->
-<script src="/static/app.js"></script>
-<script src="/static/db-service.js"></script>
-<script src="/static/util.js"></script>
-</head>
-<body ng-app="argusUI" ng-controller="argusViewCtrl">
-	<div id="menu">
-		<div id="menuarea" ng-if="menuStatus">
-			<div ng-if="menuStatus == 'info'">
-				<span class="info-title"> Image folder: </span> {{ dbInfo.image_folder }} 
-				<br><br>
-				<span class="info-title"> Database name: </span> {{ dbInfo.db_name }}
-				<br><br>
-				<span class="info-title"> Image count: </span> {{ dbInfo.image_count }}
-				<div ng-if="selectedImage">
-					<br>
-					<hr>
-					<br>
-					<span class="info-title"> Image path: </span> {{ selectedImage.path }}
-					<br><br>
-					<img ng-src="{{ '/db-image/' + selectedImage.path }}">
-					<br><br>
-					<span class="info-title"> Size: </span> {{ selectedImage.width  + " x " + selectedImage.height }}
-					<br><br>
-				</div>
-
-			</div>
-			<div ng-if="menuStatus == 'help'">
-				lol you need help
-			</div>
-		</div>
-		<div id="menubar">
-			<br><br>
-			<!-- Update the DB -->
-			<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="updateDB()">
-			<br><br> 
-			<!-- View DB Info -->
-			<img class="menuicon" title="info" src="/static/images/info.png" ng-click="showMenu('info')">
-			<br><br> 
-			<!-- Help -->
-			<img class="menuicon" title="help" src="/static/images/help.png" ng-click="dbInfo.db_name && showMenu('help')"> 
-			<br><br> 
-		</div>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="/static/app.css">
+    <!-- Use local files in development: -->
+    <script src="/static/js-lib/jquery.min.js"></script>
+    <script src="/static/js-lib/angular.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script> -->
+    <script src="/static/app.js"></script>
+    <script src="/static/db-service.js"></script>
+    <script src="/static/util.js"></script>
+  </head>
+  <body ng-app="argusUI" ng-controller="argusViewCtrl">
+    <div id="menu">
+      <div id="menuarea" ng-if="menuStatus">
+	<div ng-if="menuStatus == 'info'">
+	  <span class="info-title"> Image folder: </span> {{ dbInfo.image_folder }} 
+	  <br><br>
+	  <span class="info-title"> Database name: </span> {{ dbInfo.db_name }}
+	  <br><br>
+	  <span class="info-title"> Image count: </span> {{ dbInfo.image_count }}
+	  <div ng-if="selectedImage">
+	    <br>
+	    <hr>
+	    <br>
+	    <span class="info-title"> Image path: </span> {{ selectedImage.path }}
+	    <br><br>
+	    <img ng-src="{{ '/db-image/' + selectedImage.path }}">
+	    <br><br>
+	    <span class="info-title"> Size: </span> {{ selectedImage.width  + " x " + selectedImage.height }}
+	    <br><br>
+	  </div>
+	  
 	</div>
-
-	<h1 id="no-db-message" ng-if="!dbInfo || !dbInfo.db_name">Not connected to database.</h1>
-	<div id="view" ng-if="dbInfo && dbInfo.db_name">	
-		<tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..." all-tags="allTags" is-query="true"></tag-input>
-		<div id="querybuttons">
-			<img class="menuicon" title="select all" src="/static/images/all.png" ng-click="dbInfo.db_name && getAllImages()">
-			<img class="menuicon" title="show recent" src="/static/images/recent.png" ng-click="dbInfo.db_name && showMenu('help')">
-		</div>
-		<div id="image-container">
-			<h1 ng-if="currentQuery.length && !queryResult.length"> The query {{ currentQuery }} returned no results. </h1>
-
-			<!-- List of thumbails -->
-			<paginated-images ng-if="queryResult.length && !selectedImage" adjacent-pages="5" images="queryResult" images-per-page="30" img-on-click="selectImage"></paginated-images>
-			<!-- <img class="thumbnail" ng-if="!selectedImage" ng-repeat="img in queryResult" ng-src="{{ '/db-image/' +  img.path }}" ng-click="selectImage($index)"> -->
-
-			<!-- Single selected image -->
-			<span ng-if="selectedImage">
-				<img class="selected-image" ng-src="{{ '/db-image/' + selectedImage.path }}" ng-click="deselectImage()">
-				<tag-input id="selected-image-tags" tags="selectedImage.tags" on-enter="setTags(selectedImage)" place-holder="Enter tags here..." all-tags="allTags"></tag-input>
-			</span>
-		</div>
+	<div ng-if="menuStatus == 'help'">
+	  lol you need help
 	</div>
-</body>
+      </div>
+      <div id="menubar">
+	<br><br>
+	<!-- Update the DB -->
+	<img class="menuicon" title="update the database" src="/static/images/update.png" ng-class="{ disabled: !dbInfo.db_name }" ng-click="updateDB()">
+	<br><br> 
+	<!-- View DB Info -->
+	<img class="menuicon" title="info" src="/static/images/info.png" ng-click="showMenu('info')">
+	<br><br> 
+	<!-- Help -->
+	<img class="menuicon" title="help" src="/static/images/help.png" ng-click="dbInfo.db_name && showMenu('help')"> 
+	<br><br> 
+      </div>
+    </div>
+    
+    <h1 id="no-db-message" ng-if="!dbInfo || !dbInfo.db_name">Not connected to database.</h1>
+    <div id="view" ng-if="dbInfo && dbInfo.db_name">	
+      <tag-input tags="query" on-enter="sendQuery()" place-holder="Enter query here..." all-tags="allTags" is-query="true"></tag-input>
+      <div id="querybuttons">
+	<img class="menuicon" title="select all" src="/static/images/all.png" ng-click="dbInfo.db_name && getAllImages()">
+	<img class="menuicon" title="show recent" src="/static/images/recent.png" ng-click="dbInfo.db_name && showMenu('help')">
+      </div>
+      <div id="image-container">
+	<h1 ng-if="currentQuery.length && !queryResult.length"> The query {{ currentQuery }} returned no results. </h1>
+	
+	<!-- List of thumbails -->
+	<paginated-images ng-if="queryResult.length && !selectedImage" adjacent-pages="5" images="queryResult" images-per-page="30" img-on-click="selectImage"></paginated-images>
+	<!-- <img class="thumbnail" ng-if="!selectedImage" ng-repeat="img in queryResult" ng-src="{{ '/db-image/' +  img.path }}" ng-click="selectImage($index)"> -->
+	
+	<!-- Single selected image -->
+	<span ng-if="selectedImage">
+	  <img class="selected-image" ng-src="{{ '/db-image/' + selectedImage.path }}" ng-click="deselectImage()">
+	  <tag-input id="selected-image-tags" tags="selectedImage.tags" on-enter="setTags(selectedImage)" place-holder="Enter tags here..." all-tags="allTags"></tag-input>
+	</span>
+      </div>
+    </div>
+  </body>
 </html>
