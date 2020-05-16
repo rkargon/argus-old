@@ -1,4 +1,5 @@
-# Argus
+# Argus (old)
+**DEPRECATED** - currently moving to `argus` 
 A tool for organizing wallpapers (or other images)  using a platform agnostic tagging system.
 
 ### Goals
